@@ -1,6 +1,6 @@
 package com.sparta.palpaleats.domain.menu.entity;
 
-import com.sparta.palpaleats.domain.menuoption.entity.MenuOption;
+import com.sparta.palpaleats.domain.menuoption.entity.MenuDetail;
 import com.sparta.palpaleats.domain.store.entity.Store;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,6 +25,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "menus")
 public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,5 +56,5 @@ public class Menu {
     private Store store;
 
     @OneToMany(mappedBy = "menu")
-    private List<MenuOption> menuOptionList = new ArrayList<>();
+    private List<MenuDetail> menuDetailList = new ArrayList<>();
 }
