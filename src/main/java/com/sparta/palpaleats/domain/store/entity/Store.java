@@ -77,4 +77,8 @@ public class Store {
 
     @OneToMany(mappedBy = "store")
     private List<Review> reviewList = new ArrayList<>();
+
+    public void updatePicture(String storePictureUrl) {
+        this.storePictureUrl = storePictureUrl;
+    }
 }
