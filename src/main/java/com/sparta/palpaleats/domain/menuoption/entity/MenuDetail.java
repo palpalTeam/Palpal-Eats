@@ -20,15 +20,15 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name ="menu_options")
-public class MenuOption {
+@Table(name ="menu_details")
+public class MenuDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String option;
+    private String detail;
 
     @Column(nullable = false)
     private String content;
@@ -40,6 +40,6 @@ public class MenuOption {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @OneToMany(mappedBy = "menu_option")
+    @OneToMany(mappedBy = "menuDetail")
     private List<Cart> cartList = new ArrayList<>();
 }
