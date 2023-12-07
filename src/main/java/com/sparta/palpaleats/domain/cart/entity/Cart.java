@@ -1,7 +1,6 @@
 package com.sparta.palpaleats.domain.cart.entity;
 
 import com.sparta.palpaleats.domain.menu.entity.Menu;
-import com.sparta.palpaleats.domain.menuoption.entity.MenuDetail;
 import com.sparta.palpaleats.domain.order.entity.Order;
 import com.sparta.palpaleats.domain.store.entity.Store;
 import com.sparta.palpaleats.domain.user.entity.User;
@@ -50,10 +49,6 @@ public class Cart {
     @ManyToOne
     @JoinColumn(name = "menu_id", nullable = false)
     Menu menu;
-
-    @ManyToOne
-    @JoinColumn(name = "menu_detail_id", nullable = false)
-    MenuDetail menuDetail;
 
     @ManyToOne
     @JoinColumn(name = "store_id", nullable = false)
