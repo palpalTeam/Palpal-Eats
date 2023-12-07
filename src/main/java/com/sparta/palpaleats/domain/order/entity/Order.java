@@ -19,6 +19,7 @@ import java.sql.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -28,6 +29,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @Getter
 @Setter
+@Builder
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "orders")
 public class Order {
@@ -40,7 +42,7 @@ public class Order {
     private String paymentMethod;
 
     @Column(nullable = false)
-    private Integer totalPrice;
+    private Long totalPrice;
 
     @Column
     private String requests;

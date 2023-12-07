@@ -30,7 +30,13 @@ public class CartService {
     public CommonResponseDto createCart(User user,
             CartDto.CreateCartRequestDto requestDto) throws Exception{
 
+        List<Cart> cartList = cartRepository.findAllByUserId(user.getId());
         Menu menu;
+        Store originStore;
+        Store newStore;
+        if(!cartList.isEmpty()){
+            originStore=cartList.get(0).getOrder().getStore();
+        }
 
         try{
             menu = menuRepository.findById(requestDto.getMenuId())
@@ -38,10 +44,19 @@ public class CartService {
             if(menu.getStore()==null){
                 throw new Exception(ExceptionCode.NOT_FOUND_STORE.getMessage());
             }
-            Store store = storeRepository.findById(menu.getStore().getId())
+            newStore = storeRepository.findById(menu.getStore().getId())
                     .orElseThrow(()->new Exception(ExceptionCode.NOT_FOUND_STORE.getMessage()));
         }catch (Exception e){
             return new CommonResponseDto(HttpStatus.NOT_FOUND.value(), e.getMessage());
+        }
+
+        if(!cartList.isEmpty()){
+            originStore=cartList.get(0).getMenu().getStore();
+            if(!originStore.getId().equals(newStore.getId())){
+                for(Cart cart:cartList){
+                    deleteCart(user,cart.getId());
+                }
+            }
         }
 
         Cart cart = Cart.builder()
@@ -51,7 +66,7 @@ public class CartService {
                 .build();
         cartRepository.save(cart);
 
-        return new CommonResponseDto(HttpStatus.OK.value(), "장바구니 추가 완료");
+        return new CommonResponseDto(HttpStatus.OK.value(), "장바구니 생성 완료");
     }
 
     public CommonResponseDto deleteCart(User user, Long cartId) throws Exception{
