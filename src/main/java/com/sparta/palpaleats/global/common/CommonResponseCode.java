@@ -1,4 +1,4 @@
-package com.sparta.palpaleats.domain.store.dto;
+package com.sparta.palpaleats.global.common;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,9 @@ public enum CommonResponseCode {
     // Store_Creat
     STORE_CREATE(HttpStatus.CREATED, "가게 등록에 성공했습니다."),
     // Store_Set-image
-    STORE_SET_IMAGE(HttpStatus.OK, "가게 이미지 등록에 성공했습니다");
+    STORE_SET_IMAGE(HttpStatus.OK, "가게 이미지 등록에 성공했습니다"),
+    //Menu_ADD
+    MENU_CREATE(HttpStatus.CREATED, "메뉴 등록에 성공했습니다.");
 
 
     private final HttpStatus httpStatus;

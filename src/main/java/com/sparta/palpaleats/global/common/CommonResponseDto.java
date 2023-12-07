@@ -1,4 +1,4 @@
-package com.sparta.palpaleats.domain.store.dto;
+package com.sparta.palpaleats.global.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,11 +9,11 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 @Getter
 public class CommonResponseDto {
-    private HttpStatus status;
+    private Integer status;
     private String msg;
 
     public CommonResponseDto(CommonResponseCode code) {
-        this.status = code.getHttpStatus();
+        this.status = code.getHttpStatus().value();
         this.msg = code.getMessage();
     }
 }

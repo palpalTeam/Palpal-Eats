@@ -1,8 +1,8 @@
 package com.sparta.palpaleats.domain.store.service;
 
 import com.sparta.palpaleats.domain.s3.S3Service;
-import com.sparta.palpaleats.domain.store.dto.CommonResponseCode;
-import com.sparta.palpaleats.domain.store.dto.CommonResponseDto;
+import com.sparta.palpaleats.global.common.CommonResponseCode;
+import com.sparta.palpaleats.global.common.CommonResponseDto;
 import com.sparta.palpaleats.domain.store.dto.StoreRequestDto;
 import com.sparta.palpaleats.domain.store.entity.Store;
 import com.sparta.palpaleats.domain.store.repository.StoreRepository;
@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 @Service
@@ -31,7 +30,7 @@ public class StoreService {
         store.setContent(requestDto.getContent());
         store.setPhone(requestDto.getPhone());
         store.setMinDeliveryPrice(requestDto.getMinDeliveryPrice());
-        store.setStorePictureUrl(s3Service.saveFile(requestDto.getName(), requestDto.getStorePicture()));
+        store.setStorePictureUrl(s3Service.saveFile(requestDto.getName() + "/store", requestDto.getStorePicture()));
         store.setOpenStatus(requestDto.isOpenStatus());
 
         storeRepository.save(store);
@@ -39,7 +38,7 @@ public class StoreService {
     }
 
     @Transactional
-    public CommonResponseDto addStorePicture(MultipartFile multipartFile, Long id) throws UnsupportedEncodingException {
+    public CommonResponseDto updateStorePicture(MultipartFile multipartFile, Long id) throws UnsupportedEncodingException {
         Store store = findStore(id);
         s3Service.deleteImage(store.getStorePictureUrl());
         store.updatePicture(s3Service.saveFile(store.getName(), multipartFile));

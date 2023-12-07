@@ -54,7 +54,4 @@ public class Menu {
     @ManyToOne
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
-
-    @OneToMany(mappedBy = "menu")
-    private List<MenuDetail> menuDetailList = new ArrayList<>();
 }

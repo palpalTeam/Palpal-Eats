@@ -81,4 +81,9 @@ public class Store {
     public void updatePicture(String storePictureUrl) {
         this.storePictureUrl = storePictureUrl;
     }
+
+    public void addMenuList(Menu menu) {
+        this.menuList.add(menu);
+        menu.setStore(this);
+    }
 }
