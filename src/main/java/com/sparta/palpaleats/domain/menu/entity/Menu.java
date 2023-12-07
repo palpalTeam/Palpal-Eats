@@ -1,6 +1,5 @@
 package com.sparta.palpaleats.domain.menu.entity;
 
-import com.sparta.palpaleats.domain.menuoption.entity.MenuDetail;
 import com.sparta.palpaleats.domain.store.entity.Store;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,11 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -55,6 +51,4 @@ public class Menu {
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
-    @OneToMany(mappedBy = "menu")
-    private List<MenuDetail> menuDetailList = new ArrayList<>();
 }

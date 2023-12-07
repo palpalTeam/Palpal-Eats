@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -24,6 +25,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @Getter
 @Setter
+@Builder
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "carts")
 public class Cart {
@@ -52,14 +54,6 @@ public class Cart {
     Menu menu;
 
     @ManyToOne
-    @JoinColumn(name = "menu_detail_id", nullable = false)
-    MenuDetail menuDetail;
-
-    @ManyToOne
-    @JoinColumn(name = "store_id", nullable = false)
-    Store store;
-
-    @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = true)
     Order order;
 }
