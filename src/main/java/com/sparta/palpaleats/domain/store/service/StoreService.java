@@ -28,7 +28,7 @@ public class StoreService {
     private final AmazonS3 amazonS3;
     private final StoreRepository storeRepository;
 
-    @Value("{cloud.aws.s3.bucket}")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
 
