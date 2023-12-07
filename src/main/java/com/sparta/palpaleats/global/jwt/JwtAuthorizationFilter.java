@@ -33,38 +33,36 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             FilterChain filterChain) throws ServletException, IOException {
         String accessToken = jwtUtil.resolveAccessToken(request);
         String refreshToken = jwtUtil.resolveRefreshToken(request);
-        if (accessToken != null) {
-            if (jwtUtil.validateToken(accessToken)) {
-                Claims info = jwtUtil.getUserInfoFromToken(accessToken);
 
-                // 인증정보에 유저정보 넣기
-                String email = info.getSubject();
-                SecurityContext context = SecurityContextHolder.createEmptyContext();
-                UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(email);
-                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails,
-                        null, userDetails.getAuthorities());
-                context.setAuthentication(authentication);
-                SecurityContextHolder.setContext(context);
+        if (accessToken != null && jwtUtil.validateToken(accessToken)) {
+            Claims info = jwtUtil.getUserInfoFromToken(accessToken);
 
-            } else {
-                if (jwtUtil.validateToken(refreshToken)) {
-                    Claims info = jwtUtil.getUserInfoFromToken(refreshToken);
-                    String username = info.getSubject();
-                    UserRoleEnum role = UserRoleEnum.valueOf(
-                            info.get(JwtUtil.AUTHORIZATION_KEY).toString());
-                    if (refreshTokenRepository.existsByUsername(username)) {
-                        String newAccessToken = jwtUtil.createAccessToken(username, role);
-                        jwtUtil.addJwtToHeader(newAccessToken, refreshToken, response);
-                    } else {
-                        CommonResponseDto commonResponseDto = new CommonResponseDto(
-                                HttpStatus.BAD_REQUEST.value(), "토큰이 유효하지 않습니다.");
-                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                        response.setContentType("application/json; charset=UTF-8");
-                        response.getWriter()
-                                .write(objectMapper.writeValueAsString(commonResponseDto));
-                    }
-                }
+            // 인증정보에 유저정보 넣기
+            String email = info.getSubject();
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(email);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails,
+                    null, userDetails.getAuthorities());
+            context.setAuthentication(authentication);
+            SecurityContextHolder.setContext(context);
+
+        } else if (refreshToken != null && jwtUtil.validateToken(refreshToken)) {
+            Claims info = jwtUtil.getUserInfoFromToken(refreshToken);
+            String username = info.getSubject();
+            UserRoleEnum role = UserRoleEnum.valueOf(
+                    info.get(JwtUtil.AUTHORIZATION_KEY).toString());
+            if (refreshTokenRepository.existsByUsername(username)) {
+                String newAccessToken = jwtUtil.createAccessToken(username, role);
+                String currentRefreshToken = JwtUtil.BEARER_PREFIX + refreshToken;
+                jwtUtil.addJwtToHeader(newAccessToken, currentRefreshToken, response);
             }
+        } else {
+            CommonResponseDto commonResponseDto = new CommonResponseDto(
+                    HttpStatus.BAD_REQUEST.value(), "토큰이 유효하지 않습니다.");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("application/json; charset=UTF-8");
+            response.getWriter()
+                    .write(objectMapper.writeValueAsString(commonResponseDto));
         }
 
         filterChain.doFilter(request, response);
