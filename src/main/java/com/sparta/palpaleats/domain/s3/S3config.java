@@ -1,4 +1,4 @@
-package com.sparta.palpaleats.domain.store;
+package com.sparta.palpaleats.domain.s3;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

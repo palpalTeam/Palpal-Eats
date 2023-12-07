@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/stores")
@@ -18,9 +20,8 @@ public class StoreController {
 
     private final StoreService storeService;
     @PostMapping
-    public ResponseEntity<CommonResponseDto> addStore(@RequestBody StoreRequestDto storeRequestDto)
-    {
-        CommonResponseDto commonResponseDto = storeService.addStore(storeRequestDto);
+    public ResponseEntity<CommonResponseDto> addStore(@ModelAttribute StoreRequestDto requestDto) throws UnsupportedEncodingException {
+        CommonResponseDto commonResponseDto = storeService.addStore(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseDto);
     }
 
