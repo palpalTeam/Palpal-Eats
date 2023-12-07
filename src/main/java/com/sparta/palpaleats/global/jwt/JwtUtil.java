@@ -129,4 +129,13 @@ public class JwtUtil {
         response.addHeader(AUTHORIZATION_HEADER, accessToken);
         response.addHeader(REFRESH_TOKEN_HEADER, refreshToken);
     }
+
+    public void deleteRefreshToken(HttpServletRequest request) {
+
+        String refreshToken = resolveRefreshToken(request);
+        Claims info = getUserInfoFromToken(refreshToken);
+        String username = info.getSubject();
+
+        refreshTokenRepository.deleteRefreshToken(username);
+    }
 }

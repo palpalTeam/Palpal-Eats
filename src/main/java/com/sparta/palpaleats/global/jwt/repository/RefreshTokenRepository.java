@@ -25,4 +25,9 @@ public class RefreshTokenRepository {
         String refreshToken = redisTemplate.opsForValue().get(username);
         return refreshToken != null && !refreshToken.isEmpty();
     }
+
+    public void deleteRefreshToken(String username) {
+
+        redisTemplate.delete(username);
+    }
 }

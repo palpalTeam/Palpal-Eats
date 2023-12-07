@@ -6,6 +6,8 @@ import com.sparta.palpaleats.domain.user.entity.UserRoleEnum;
 import com.sparta.palpaleats.domain.user.repository.UserRepository;
 import com.sparta.palpaleats.global.exception.CustomException;
 import com.sparta.palpaleats.global.exception.ExceptionCode;
+import com.sparta.palpaleats.global.jwt.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     public void signup(UserSaveRequestDto requestDto) {
 
@@ -41,4 +44,8 @@ public class UserService {
 
     }
 
+    public void logout(HttpServletRequest request) {
+
+        jwtUtil.deleteRefreshToken(request);
+    }
 }

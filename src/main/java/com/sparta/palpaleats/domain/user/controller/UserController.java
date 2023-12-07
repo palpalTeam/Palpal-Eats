@@ -3,6 +3,7 @@ package com.sparta.palpaleats.domain.user.controller;
 import com.sparta.palpaleats.domain.user.dto.UserSaveRequestDto;
 import com.sparta.palpaleats.domain.user.service.UserService;
 import com.sparta.palpaleats.global.dto.CommonResponseDto;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,9 +29,10 @@ public class UserController {
     }
 
     @PatchMapping("/users/logout")
-    public ResponseEntity<CommonResponseDto> logout() {
+    public ResponseEntity<CommonResponseDto> logout(HttpServletRequest request) {
+
+        userService.logout(request);
         return ResponseEntity.status(HttpStatus.OK.value())
                 .body(new CommonResponseDto(HttpStatus.OK.value(), "로그아웃이 완료되었습니다"));
     }
-
 }
