@@ -2,6 +2,7 @@ package com.sparta.palpaleats.domain.store.service;
 
 import com.sparta.palpaleats.domain.review.entity.Review;
 import com.sparta.palpaleats.domain.s3.S3Service;
+import com.sparta.palpaleats.domain.s3.S3Util;
 import com.sparta.palpaleats.domain.store.dto.StoreResponseDto;
 import com.sparta.palpaleats.global.common.CommonResponseCode;
 import com.sparta.palpaleats.global.common.CommonResponseDto;
@@ -25,6 +26,8 @@ public class StoreService {
     private final StoreRepository storeRepository;
     private final S3Service s3Service;
 
+    private final S3Util s3Util;
+
     public CommonResponseDto addStore(StoreRequestDto requestDto) throws UnsupportedEncodingException {
         Store store = new Store();
         store.setName(requestDto.getName());
@@ -33,21 +36,78 @@ public class StoreService {
         store.setContent(requestDto.getContent());
         store.setPhone(requestDto.getPhone());
         store.setMinDeliveryPrice(requestDto.getMinDeliveryPrice());
-        store.setStorePictureUrl(s3Service.saveFile(requestDto.getName() + "/store", requestDto.getStorePicture()));
+        if (s3Util.validateFileExists(requestDto.getStorePicture())) {
+            store.setStorePictureUrl(s3Service.saveFile(requestDto.getName() + "/store", requestDto.getStorePicture()));
+        }
         store.setOpenStatus(requestDto.isOpenStatus());
 
         storeRepository.save(store);
         return new CommonResponseDto(CommonResponseCode.STORE_CREATE);
     }
 
+
     @Transactional
-    public CommonResponseDto updateStorePicture(MultipartFile multipartFile, Long id) throws UnsupportedEncodingException {
-        Store store = findStore(id);
-        s3Service.deleteImage(store.getStorePictureUrl());
-        store.updatePicture(s3Service.saveFile(store.getName(), multipartFile));
-        return new CommonResponseDto(CommonResponseCode.STORE_SET_IMAGE);
+    public CommonResponseDto updatePicture(MultipartFile multipartFile, Long storeId) throws UnsupportedEncodingException {
+        Store store = findStore(storeId);
+        if (s3Util.validateFileExists(multipartFile)) {
+            s3Service.deleteImage(store.getStorePictureUrl());
+            String imageUrl = s3Service.saveFile(store.getName() + "/store", multipartFile);
+            store.updatePicture(imageUrl);
+        }
+        return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
     }
 
+
+    @Transactional
+    public CommonResponseDto updateStoreName(String name, Long storeId) {
+        Store store = findStore(storeId);
+        store.setName(name);
+        return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
+    }
+
+    @Transactional
+    public CommonResponseDto updateStoreCategory(String category, Long storeId) {
+        Store store = findStore(storeId);
+        store.setCategory(category);
+        return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
+    }
+
+    @Transactional
+    public CommonResponseDto updateStoreAddress(String address, Long storeId){
+        Store store = findStore(storeId);
+        store.setAddress(address);
+        return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
+    }
+
+
+    @Transactional
+    public CommonResponseDto updateStorePhone(String phone, Long storeId) {
+        Store store = findStore(storeId);
+        store.setPhone(phone);
+        return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
+    }
+
+
+    @Transactional
+    public CommonResponseDto updateStoreContent(String content, Long storeId) {
+        Store store = findStore(storeId);
+        store.setContent(content);
+        return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
+    }
+
+    @Transactional
+    public CommonResponseDto updateStoreMinDeliveryPrice(Integer minDeliveryPrice, Long storeId) {
+        Store store = findStore(storeId);
+        store.setMinDeliveryPrice(minDeliveryPrice);
+        return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
+    }
+
+    @Transactional
+    public CommonResponseDto updateStoreOpenStatus(Boolean openStatus, Long storeId) {
+        Store store = findStore(storeId);
+        store.setOpenStatus(openStatus);
+        return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
+    }
 
     public List<StoreResponseDto> getStoreList() {
         return storeRepository.findAll().stream().map(this::convertStoreResponseDto).toList();
@@ -64,7 +124,7 @@ public class StoreService {
                 new CustomException(ExceptionCode.NOT_FOUND_STORE));
     }
 
-    private StoreResponseDto convertStoreResponseDto(Store store){
+    private StoreResponseDto convertStoreResponseDto(Store store) {
         StoreResponseDto storeResponseDto = new StoreResponseDto();
         storeResponseDto.setName(store.getName());
         storeResponseDto.setCategory(store.getCategory());

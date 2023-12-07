@@ -21,9 +21,7 @@ public class S3Util {
         return category + CATEGORY_PREFIX + fileName + TIME_SEPARATOR + now + fileExtension;
     }
 
-    public void validateFileExists(MultipartFile multipartFile) {
-        if (multipartFile.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
+    public boolean validateFileExists(MultipartFile multipartFile) {
+        return !multipartFile.isEmpty();
     }
 }

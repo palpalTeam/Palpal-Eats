@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
 
 @RestController
-@RequestMapping("/menus")
+@RequestMapping("/stores")
 @RequiredArgsConstructor
 public class MenuController {
 
     private final MenuService menuService;
 
-    @PostMapping("/{storeId}")
+    @PostMapping("/{storeId}/menu")
     public ResponseEntity<CommonResponseDto> addMenu(@ModelAttribute MenuRequestDto requestDto, @PathVariable Long storeId) throws UnsupportedEncodingException {
         CommonResponseDto commonResponseDto = menuService.addMenu(requestDto, storeId);
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseDto);

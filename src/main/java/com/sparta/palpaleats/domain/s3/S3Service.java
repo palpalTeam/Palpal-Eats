@@ -28,7 +28,6 @@ public class S3Service {
     private String bucket;
 
     public String saveFile(String category, MultipartFile multipartFile) throws UnsupportedEncodingException {
-        s3Util.validateFileExists(multipartFile);
         String fileName = s3Util.buildFileName(category, Objects.requireNonNull(multipartFile.getOriginalFilename()));
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
