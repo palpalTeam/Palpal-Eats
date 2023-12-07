@@ -1,5 +1,6 @@
 package com.sparta.palpaleats.domain.store.controller;
 
+import com.sparta.palpaleats.domain.store.dto.StoreResponseDto;
 import com.sparta.palpaleats.global.common.CommonResponseDto;
 import com.sparta.palpaleats.domain.store.dto.StoreRequestDto;
 import com.sparta.palpaleats.domain.store.service.StoreService;
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/stores")
@@ -29,5 +31,19 @@ public class StoreController {
         CommonResponseDto commonResponseDto = storeService.updateStorePicture(multipartFile, storeId);
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseDto);
     }
+
+    @GetMapping
+    public ResponseEntity<List<StoreResponseDto>> getStoreList(){
+        List<StoreResponseDto> storeResponseDtoList = storeService.getStoreList();
+        return ResponseEntity.ok().body(storeResponseDtoList);
+    }
+
+    @GetMapping("/{storeId}")
+    public ResponseEntity<StoreResponseDto> getStore(@PathVariable Long storeId){
+        StoreResponseDto storeResponseDto = storeService.getStore(storeId);
+        return ResponseEntity.ok().body(storeResponseDto);
+    }
+
+
 
 }

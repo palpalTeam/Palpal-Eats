@@ -86,4 +86,19 @@ public class Store {
         this.menuList.add(menu);
         menu.setStore(this);
     }
+
+    public Double getAverageReviewRating(){
+        int sum = 0;
+        for(Review review : this.reviewList){
+            sum += review.getRating();
+        }
+        return (double) (sum / reviewList.size());
+    }
+
+    public String getReviewCount(){
+        if(this.reviewList.size() > 100){
+            return "100+";
+        }
+        return String.valueOf(this.reviewList.size());
+    }
 }
