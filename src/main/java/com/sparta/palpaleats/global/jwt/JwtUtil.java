@@ -1,6 +1,7 @@
 package com.sparta.palpaleats.global.jwt;
 
 import com.sparta.palpaleats.domain.user.entity.UserRoleEnum;
+import com.sparta.palpaleats.global.jwt.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,20 +24,27 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
+
+    public static final String REFRESH_TOKEN_HEADER = "Refresh";
 
     public static final String AUTHORIZATION_KEY = "auth";
 
     public static final String BEARER_PREFIX = "Bearer ";
 
-    public final long ACCESS_TOKEN_TIME = 60 * 60 * 1000L;
+    public static final long ACCESS_TOKEN_TIME = 60 * 60 * 1000L; // 60분
+
+    public static final long REFRESH_TOKEN_TIME = 60 * 60 * 24 * 7 * 1000L; // 일주일
 
     @Value("${jwt.secret.key}")
     private String secretKey;
 
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+
+    private final RefreshTokenRepository refreshTokenRepository;
 
     private static final Logger logger = LoggerFactory.getLogger("JWT 로그");
 
@@ -47,8 +56,16 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String resolveToken(HttpServletRequest request) {
+    public String resolveAccessToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+
+    public String resolveRefreshToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(REFRESH_TOKEN_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(7);
         }
@@ -75,7 +92,7 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
-    public String createToken(String email, UserRoleEnum role) {
+    public String createAccessToken(String email, UserRoleEnum role) {
         Date date = new Date();
 
         return BEARER_PREFIX +
@@ -88,8 +105,28 @@ public class JwtUtil {
                         .compact();
     }
 
-    public void addJwtToHeader(String token, HttpServletResponse response) {
+    public String createRefreshToken(String email, UserRoleEnum role) {
+        Date date = new Date();
 
-        response.addHeader(AUTHORIZATION_HEADER, token);
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .setSubject(email)
+                        .claim(AUTHORIZATION_KEY, role)
+                        .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))
+                        .setIssuedAt(date)
+                        .signWith(key, signatureAlgorithm)
+                        .compact();
+    }
+
+    public void saveRefreshToken(String username, String refreshToken) {
+
+        refreshTokenRepository.saveRefreshToken(username, refreshToken);
+    }
+
+    public void addJwtToHeader(String accessToken, String refreshToken,
+            HttpServletResponse response) {
+
+        response.addHeader(AUTHORIZATION_HEADER, accessToken);
+        response.addHeader(REFRESH_TOKEN_HEADER, refreshToken);
     }
 }

@@ -52,16 +52,19 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
-        String token = jwtUtil.createToken(username, role);
+        String accessToken = jwtUtil.createAccessToken(username, role);
+        String refreshToken = jwtUtil.createRefreshToken(username, role);
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         String success = "로그인 되었습니다.";
 
+        jwtUtil.saveRefreshToken(username, refreshToken);
+
         response.getWriter().write(success);
 
-        jwtUtil.addJwtToHeader(token, response);
+        jwtUtil.addJwtToHeader(accessToken, refreshToken, response);
     }
 
     @Override

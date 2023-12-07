@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.palpaleats.global.jwt.JwtAuthenticationFilter;
 import com.sparta.palpaleats.global.jwt.JwtAuthorizationFilter;
 import com.sparta.palpaleats.global.jwt.JwtUtil;
+import com.sparta.palpaleats.global.jwt.repository.RefreshTokenRepository;
 import com.sparta.palpaleats.global.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,11 +32,14 @@ public class WebSecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
 
+    private final RefreshTokenRepository refreshTokenRepository;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
 
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
             throws Exception {
@@ -45,7 +49,8 @@ public class WebSecurityConfig {
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
 
-        return new JwtAuthorizationFilter(jwtUtil, objectMapper, userDetailsServiceImpl);
+        return new JwtAuthorizationFilter(jwtUtil, objectMapper, userDetailsServiceImpl,
+                refreshTokenRepository);
     }
 
     @Bean

@@ -1,7 +1,9 @@
 package com.sparta.palpaleats.global.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.palpaleats.domain.user.entity.UserRoleEnum;
 import com.sparta.palpaleats.global.dto.CommonResponseDto;
+import com.sparta.palpaleats.global.jwt.repository.RefreshTokenRepository;
 import com.sparta.palpaleats.global.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -24,30 +26,44 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        String token = jwtUtil.resolveToken(request);
-
-        if (token != null) {
-            if (jwtUtil.validateToken(token)) {
-                Claims info = jwtUtil.getUserInfoFromToken(token);
+        String accessToken = jwtUtil.resolveAccessToken(request);
+        String refreshToken = jwtUtil.resolveRefreshToken(request);
+        if (accessToken != null) {
+            if (jwtUtil.validateToken(accessToken)) {
+                Claims info = jwtUtil.getUserInfoFromToken(accessToken);
 
                 // 인증정보에 유저정보 넣기
                 String email = info.getSubject();
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
                 UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(email);
-                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails,
+                        null, userDetails.getAuthorities());
                 context.setAuthentication(authentication);
                 SecurityContextHolder.setContext(context);
 
             } else {
-                CommonResponseDto commonResponseDto = new CommonResponseDto(
-                        HttpStatus.BAD_REQUEST.value(), "토큰이 유효하지 않습니다.");
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.setContentType("application/json; charset=UTF-8");
-                response.getWriter().write(objectMapper.writeValueAsString(commonResponseDto));
+                if (jwtUtil.validateToken(refreshToken)) {
+                    Claims info = jwtUtil.getUserInfoFromToken(refreshToken);
+                    String username = info.getSubject();
+                    UserRoleEnum role = UserRoleEnum.valueOf(
+                            info.get(JwtUtil.AUTHORIZATION_KEY).toString());
+                    if (refreshTokenRepository.existsByUsername(username)) {
+                        String newAccessToken = jwtUtil.createAccessToken(username, role);
+                        jwtUtil.addJwtToHeader(newAccessToken, refreshToken, response);
+                    } else {
+                        CommonResponseDto commonResponseDto = new CommonResponseDto(
+                                HttpStatus.BAD_REQUEST.value(), "토큰이 유효하지 않습니다.");
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                        response.setContentType("application/json; charset=UTF-8");
+                        response.getWriter()
+                                .write(objectMapper.writeValueAsString(commonResponseDto));
+                    }
+                }
             }
         }
 
