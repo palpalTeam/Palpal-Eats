@@ -24,6 +24,6 @@ public class UserSaveRequestDto {
     @NotBlank
     String nickname;
 
-    @Pattern(regexp = "^[a-zA-Z0-9가-힣-]+$")
+    @Pattern(regexp = "^[a-zA-Z0-9가-힣\\s-]+$")
     String currentAddress;
 }

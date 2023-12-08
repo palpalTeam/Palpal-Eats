@@ -24,7 +24,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final ObjectMapper objectMapper;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -56,13 +55,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 String currentRefreshToken = JwtUtil.BEARER_PREFIX + refreshToken;
                 jwtUtil.addJwtToHeader(newAccessToken, currentRefreshToken, response);
             }
-        } else {
-            CommonResponseDto commonResponseDto = new CommonResponseDto(
-                    HttpStatus.BAD_REQUEST.value(), "토큰이 유효하지 않습니다.");
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setContentType("application/json; charset=UTF-8");
-            response.getWriter()
-                    .write(objectMapper.writeValueAsString(commonResponseDto));
         }
 
         filterChain.doFilter(request, response);
