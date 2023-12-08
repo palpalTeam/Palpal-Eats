@@ -1,7 +1,10 @@
 package com.sparta.palpaleats.domain.user.service;
 
+import com.sparta.palpaleats.domain.order.entity.Order;
+import com.sparta.palpaleats.domain.order.repository.OrderRepository;
 import com.sparta.palpaleats.domain.user.dto.UserAddressUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserNicknameUpdateRequestDto;
+import com.sparta.palpaleats.domain.user.dto.UserOrderResponseDto;
 import com.sparta.palpaleats.domain.user.dto.UserPasswordUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserResponseDto;
 import com.sparta.palpaleats.domain.user.dto.UserSaveRequestDto;
@@ -23,6 +26,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final OrderRepository orderRepository;
     private final JwtUtil jwtUtil;
 
     public void signup(UserSaveRequestDto requestDto) {
@@ -102,5 +106,23 @@ public class UserService {
         );
 
         return new UserResponseDto(user);
+    }
+
+
+    public UserOrderResponseDto getUserOrder(Long id, Long orderId) {
+
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_ORDER)
+        );
+
+        if(!order.getUser().getId().equals(user.getId())) {
+            throw new CustomException(ExceptionCode.FORBIDDEN_YOUR_NOT_COME_IN);
+        }
+
+        return new UserOrderResponseDto(order);
     }
 }

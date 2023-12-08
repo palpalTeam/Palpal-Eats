@@ -2,6 +2,7 @@ package com.sparta.palpaleats.domain.user.controller;
 
 import com.sparta.palpaleats.domain.user.dto.UserAddressUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserNicknameUpdateRequestDto;
+import com.sparta.palpaleats.domain.user.dto.UserOrderResponseDto;
 import com.sparta.palpaleats.domain.user.dto.UserPasswordUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserResponseDto;
 import com.sparta.palpaleats.domain.user.dto.UserSaveRequestDto;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,7 +46,8 @@ public class UserController {
     }
 
     @GetMapping("/myinfo")
-    public ResponseEntity<UserResponseDto> getMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<UserResponseDto> getMyInfo(
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         UserResponseDto responseDto = userService.getMyInfo(userDetails.getUser().getId());
 
@@ -79,6 +82,15 @@ public class UserController {
 
         userService.updateUserPassword(userDetails.getUser().getId(), requestDto);
 
-        return ResponseEntity.status(HttpStatus.OK.value()).body(new CommonResponseDto(HttpStatus.OK.value(), "비밀번호가 수정되었습니다"));
+        return ResponseEntity.status(HttpStatus.OK.value())
+                .body(new CommonResponseDto(HttpStatus.OK.value(), "비밀번호가 수정되었습니다"));
+    }
+
+    @GetMapping("/myinfo/orders/{orderId}")
+    public ResponseEntity<UserOrderResponseDto> getUserOrder(
+            @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long orderId) {
+
+        UserOrderResponseDto responseDto = userService.getUserOrder(userDetails.getUser().getId(), orderId);
+        return ResponseEntity.status(HttpStatus.OK.value()).body(responseDto);
     }
 }
