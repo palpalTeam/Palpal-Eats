@@ -85,6 +85,10 @@ public class UserService {
 
         String nickname = requestDto.getNickname();
 
+        if(userRepository.existsByNickname(nickname)) {
+            throw new CustomException(ExceptionCode.CONFLICT_USER_NICKNAME);
+        }
+
         User user = userRepository.findById(id).orElseThrow(
                 () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
         );
