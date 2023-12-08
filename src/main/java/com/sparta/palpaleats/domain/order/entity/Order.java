@@ -56,6 +56,9 @@ public class Order {
     @Column(nullable = false)
     private String deliveryAddress;
 
+    @Column(nullable = false)
+    private boolean isDeleted;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

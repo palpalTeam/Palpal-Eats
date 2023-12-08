@@ -29,32 +29,28 @@ public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(nullable = false)
-    Integer quantity;
+    private Integer quantity;
 
     @CreatedDate
     @Column(updatable = false)
-    LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @Column
     @LastModifiedDate
-    LocalDateTime modifiedAt;
+    private LocalDateTime modifiedAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    User user;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "menu_id", nullable = false)
-    Menu menu;
+    private Menu menu;
 
     @ManyToOne
-    @JoinColumn(name = "store_id", nullable = false)
-    Store store;
-
-    @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
-    Order order;
+    @JoinColumn(name = "order_id")
+    private Order order;
 }
