@@ -1,6 +1,7 @@
 package com.sparta.palpaleats.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.palpaleats.global.exception.ExceptionHandlerFilter;
 import com.sparta.palpaleats.global.jwt.JwtAuthenticationFilter;
 import com.sparta.palpaleats.global.jwt.JwtAuthorizationFilter;
 import com.sparta.palpaleats.global.jwt.JwtUtil;
@@ -34,6 +35,7 @@ public class WebSecurityConfig {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
+
     @Bean
     public PasswordEncoder passwordEncoder() {
 
@@ -49,7 +51,7 @@ public class WebSecurityConfig {
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
 
-        return new JwtAuthorizationFilter(jwtUtil, objectMapper, userDetailsServiceImpl,
+        return new JwtAuthorizationFilter(jwtUtil, userDetailsServiceImpl,
                 refreshTokenRepository);
     }
 
@@ -77,6 +79,7 @@ public class WebSecurityConfig {
                         .anyRequest().permitAll()
         );
 
+        http.addFilterBefore(new ExceptionHandlerFilter(),JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), JwtAuthorizationFilter.class);
 

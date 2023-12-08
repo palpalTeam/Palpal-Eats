@@ -34,7 +34,12 @@ public enum ExceptionCode {
 
     FORBIDDEN_YOUR_NOT_STORE_OWNER(HttpStatus.FORBIDDEN, "본인의 가게에만 접근할 수 있습니다."),
 
-    FORBIDDEN_YOUR_NOT_COME_IN(HttpStatus.FORBIDDEN, "권한이 없습니다");
+    FORBIDDEN_YOUR_NOT_COME_IN(HttpStatus.FORBIDDEN, "권한이 없습니다"),
+
+    // UNAUTHORIZED 401
+    UNAUTHORIZED_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "토큰의 유효기간이 만료되었습니다"),
+
+    UNAUTHORIZED_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
