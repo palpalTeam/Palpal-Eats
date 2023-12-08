@@ -24,4 +24,11 @@ public class S3Util {
     public boolean validateFileExists(MultipartFile multipartFile) {
         return !multipartFile.isEmpty();
     }
+
+    // Get S3 pathUrl
+    public String getUrlPath(String fileUrl){
+        String splitStr = ".com/";
+        String fileName = fileUrl.substring(fileUrl.lastIndexOf(splitStr) + splitStr.length());
+        return fileName;
+    }
 }

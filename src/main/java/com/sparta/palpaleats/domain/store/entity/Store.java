@@ -37,6 +37,9 @@ public class Store {
     @Column
     private String storePictureUrl;
 
+    @Column
+    private String storePicturePath;
+
     @Column(nullable = false, length = 20)
     private String phone;
 
@@ -70,8 +73,9 @@ public class Store {
     @OneToMany(mappedBy = "store")
     private List<Review> reviewList = new ArrayList<>();
 
-    public void updatePicture(String storePictureUrl) {
-        this.storePictureUrl = storePictureUrl;
+    public void updatePicture(String[] urlArr) {
+        this.storePictureUrl = urlArr[0];
+        this.storePicturePath = urlArr[1];
     }
 
     public void addMenuList(Menu menu) {

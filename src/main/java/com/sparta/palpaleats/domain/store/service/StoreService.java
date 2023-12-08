@@ -37,10 +37,11 @@ public class StoreService {
         store.setPhone(requestDto.getPhone());
         store.setMinDeliveryPrice(requestDto.getMinDeliveryPrice());
         if (s3Util.validateFileExists(requestDto.getStorePicture())) {
-            store.setStorePictureUrl(s3Service.saveFile(requestDto.getName() + "/store", requestDto.getStorePicture()));
+            String[] urlArr = s3Service.saveFile(requestDto.getName() + "/store", requestDto.getStorePicture());
+            store.setStorePictureUrl(urlArr[0]);
+            store.setStorePicturePath(urlArr[1]);
         }
         store.setOpenStatus(requestDto.isOpenStatus());
-
         storeRepository.save(store);
         return new CommonResponseDto(CommonResponseCode.STORE_CREATE);
     }
@@ -50,9 +51,9 @@ public class StoreService {
     public CommonResponseDto updatePicture(MultipartFile multipartFile, Long storeId) throws UnsupportedEncodingException {
         Store store = findStore(storeId);
         if (s3Util.validateFileExists(multipartFile)) {
-            s3Service.deleteImage(store.getStorePictureUrl());
-            String imageUrl = s3Service.saveFile(store.getName() + "/store", multipartFile);
-            store.updatePicture(imageUrl);
+            s3Service.deleteImage(store.getStorePicturePath());
+            String[] urlArr = s3Service.saveFile(store.getName() + "/store", multipartFile);
+            store.updatePicture(urlArr);
         }
         return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
     }
@@ -135,4 +136,5 @@ public class StoreService {
         storeResponseDto.setOpenStatus(store.isOpenStatus());
         return storeResponseDto;
     }
+
 }

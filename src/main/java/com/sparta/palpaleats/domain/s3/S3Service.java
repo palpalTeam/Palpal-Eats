@@ -27,9 +27,9 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String saveFile(String category, MultipartFile multipartFile) throws UnsupportedEncodingException {
+    public String[] saveFile(String category, MultipartFile multipartFile) throws UnsupportedEncodingException {
         String fileName = s3Util.buildFileName(category, Objects.requireNonNull(multipartFile.getOriginalFilename()));
-
+        String[] fileUrlArr = new String[2];
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(multipartFile.getContentType());
 
@@ -38,12 +38,15 @@ public class S3Service {
                     .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {throw new IllegalArgumentException();
         }
-        return URLDecoder.decode(amazonS3.getUrl(bucket, fileName).toString(), "utf-8");
+        String url = amazonS3.getUrl(bucket,fileName).toString();
+        String decodeUrl = URLDecoder.decode(url, "utf-8");
+        fileUrlArr[0] = url;
+        fileUrlArr[1] = s3Util.getUrlPath(decodeUrl);
+        return fileUrlArr;
     }
 
-    public void deleteImage(String fileUrl) {
-        String splitStr = ".com/";
-        String fileName = fileUrl.substring(fileUrl.lastIndexOf(splitStr) + splitStr.length());
-        amazonS3.deleteObject(bucket, fileName);
+    // URL Path만을 입력값으로 받는다 -> 즉 imageUrL이 아닌 버킷에 존재하는 객체의 Key값을 입력받는다.
+    public void deleteImage(String filePath) {
+        amazonS3.deleteObject(bucket, filePath);
     }
 }
