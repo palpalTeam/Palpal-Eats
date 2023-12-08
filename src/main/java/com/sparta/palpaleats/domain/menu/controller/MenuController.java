@@ -47,4 +47,21 @@ public class MenuController {
         return ResponseEntity.ok().body(commonResponseDto);
     }
 
+    @PatchMapping("{storeId}/menu/{menuId}")
+    public ResponseEntity<CommonResponseDto> updateMenuName(@PathVariable Long storeId, @PathVariable Long menuId, @RequestParam("name") String name){
+        CommonResponseDto commonResponseDto = menuService.updateMenuName(storeId, menuId, name);
+        return ResponseEntity.ok().body(commonResponseDto);
+    }
+
+    @PatchMapping("{storeId}/menu/{menuId}")
+    public ResponseEntity<CommonResponseDto> updateMenuPrice(@PathVariable Long storeId, @PathVariable Long menuId, @RequestParam("price") Integer price){
+        CommonResponseDto commonResponseDto = menuService.updateMenuPrice(storeId, menuId, price);
+        return ResponseEntity.ok().body(commonResponseDto);
+    }
+
+    @PatchMapping("{storeId}/menu/{menuId}")
+    public ResponseEntity<CommonResponseDto> updateMenuCategory(@PathVariable Long storeId, @PathVariable Long menuId, @RequestParam("category") String category){
+        CommonResponseDto commonResponseDto = menuService.updateMenuCategory(storeId, menuId, category);
+        return ResponseEntity.ok().body(commonResponseDto);
+    }
 }

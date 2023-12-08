@@ -75,6 +75,37 @@ public class MenuService {
         return new CommonResponseDto(CommonResponseCode.MENU_UPDATE);
     }
 
+    @Transactional
+    public CommonResponseDto updateMenuName(Long storeId, Long menuId, String name) {
+        Menu menu = findMenu(menuId);
+        if(!Objects.equals(menu.getStore().getId(), storeId)){
+            throw new CustomException(ExceptionCode.NOT_MATCH_STORE);
+        }
+        menu.setName(name);
+        return new CommonResponseDto(CommonResponseCode.MENU_UPDATE);
+    }
+
+    @Transactional
+    public CommonResponseDto updateMenuPrice(Long storeId, Long menuId, Integer price) {
+        Menu menu = findMenu(menuId);
+        if(!Objects.equals(menu.getStore().getId(), storeId)){
+            throw new CustomException(ExceptionCode.NOT_MATCH_STORE);
+        }
+        menu.setPrice(price);
+        return new CommonResponseDto(CommonResponseCode.MENU_UPDATE);
+    }
+
+    @Transactional
+    public CommonResponseDto updateMenuCategory(Long storeId, Long menuId, String category) {
+        Menu menu = findMenu(menuId);
+        if(!Objects.equals(menu.getStore().getId(), storeId)){
+            throw new CustomException(ExceptionCode.NOT_MATCH_STORE);
+        }
+        menu.setCategory(category);
+        return new CommonResponseDto(CommonResponseCode.MENU_UPDATE);
+    }
+
+
     private Store findStore(Long id){
         return storeRepository.findById(id).orElseThrow(() ->
                 new CustomException(ExceptionCode.NOT_FOUND_STORE));
@@ -84,4 +115,5 @@ public class MenuService {
         return menuRepository.findById(menuId).orElseThrow(() ->
                 new CustomException(ExceptionCode.NOT_FOUND_MENU));
     }
+
 }
