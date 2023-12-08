@@ -9,10 +9,10 @@ import lombok.Setter;
 @Setter
 public class UserPasswordUpdateRequestDto {
 
-    String oldPassword;
+    private String oldPassword;
 
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9+-_.]{8,15}$")
-    String newPassword;
+    private String newPassword;
 
 }

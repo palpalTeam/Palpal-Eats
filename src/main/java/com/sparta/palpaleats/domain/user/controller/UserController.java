@@ -3,6 +3,7 @@ package com.sparta.palpaleats.domain.user.controller;
 import com.sparta.palpaleats.domain.user.dto.UserAddressUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserNicknameUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserPasswordUpdateRequestDto;
+import com.sparta.palpaleats.domain.user.dto.UserResponseDto;
 import com.sparta.palpaleats.domain.user.dto.UserSaveRequestDto;
 import com.sparta.palpaleats.domain.user.service.UserService;
 import com.sparta.palpaleats.global.dto.CommonResponseDto;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +41,14 @@ public class UserController {
         userService.logout(request);
         return ResponseEntity.status(HttpStatus.OK.value())
                 .body(new CommonResponseDto(HttpStatus.OK.value(), "로그아웃이 완료되었습니다"));
+    }
+
+    @GetMapping("/myinfo")
+    public ResponseEntity<UserResponseDto> getMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        UserResponseDto responseDto = userService.getMyInfo(userDetails.getUser().getId());
+
+        return ResponseEntity.status(HttpStatus.OK.value()).body(responseDto);
     }
 
     @PatchMapping("/myinfo/address")

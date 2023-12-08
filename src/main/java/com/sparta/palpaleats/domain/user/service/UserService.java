@@ -3,6 +3,7 @@ package com.sparta.palpaleats.domain.user.service;
 import com.sparta.palpaleats.domain.user.dto.UserAddressUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserNicknameUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserPasswordUpdateRequestDto;
+import com.sparta.palpaleats.domain.user.dto.UserResponseDto;
 import com.sparta.palpaleats.domain.user.dto.UserSaveRequestDto;
 import com.sparta.palpaleats.domain.user.entity.User;
 import com.sparta.palpaleats.domain.user.entity.UserRoleEnum;
@@ -92,5 +93,14 @@ public class UserService {
         }
 
         user.setPassword(newPassword);
+    }
+
+    public UserResponseDto getMyInfo(Long id) {
+
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+
+        return new UserResponseDto(user);
     }
 }

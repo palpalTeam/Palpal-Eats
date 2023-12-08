@@ -12,18 +12,18 @@ public class UserSaveRequestDto {
 
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")
-    String email;
+    private String email;
 
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9+-_.]{8,15}$")
-    String password;
+    private String password;
 
     @NotNull
-    Boolean isSeller;
+    private Boolean isSeller;
 
     @NotBlank
-    String nickname;
+    private String nickname;
 
     @Pattern(regexp = "^[a-zA-Z0-9가-힣\\s-]+$")
-    String currentAddress;
+    private String currentAddress;
 }

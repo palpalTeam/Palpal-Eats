@@ -9,5 +9,5 @@ import lombok.Setter;
 public class UserNicknameUpdateRequestDto {
 
     @NotBlank
-    String nickname;
+    private String nickname;
 }
