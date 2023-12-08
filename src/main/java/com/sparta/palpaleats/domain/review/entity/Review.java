@@ -35,7 +35,7 @@ public class Review {
     private String content;
 
     @Column(nullable = false)
-    public Integer rating;
+    private Integer rating;
 
     @Column(updatable = false)
     @CreatedDate

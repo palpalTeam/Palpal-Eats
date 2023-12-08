@@ -25,27 +25,30 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(nullable = false)
-    String category;
+    private String category;
 
     @Column(nullable = false)
-    String name;
+    private String name;
 
     @Column(nullable = false)
-    int price;
+    private int price;
 
-    @Column(nullable = true)
-    String menuPictureUrl;
+    @Column
+    private String menuPictureUrl;
+
+    @Column(nullable = false)
+    private boolean isDeleted;
 
     @Column(nullable = false)
     @CreatedDate
-    LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
     @LastModifiedDate
-    LocalDateTime modifiedAt;
+    private LocalDateTime modifiedAt;
 
     @ManyToOne
     @JoinColumn(name = "store_id", nullable = false)

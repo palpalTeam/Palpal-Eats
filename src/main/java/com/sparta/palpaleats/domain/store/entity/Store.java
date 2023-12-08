@@ -57,6 +57,9 @@ public class Store {
     @Column(nullable = false)
     private boolean openStatus;
 
+    @Column(nullable = false)
+    private boolean isDeleted;
+
     @Column
     @CreatedDate
     private LocalDateTime createdAt;
