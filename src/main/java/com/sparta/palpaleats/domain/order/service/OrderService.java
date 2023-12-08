@@ -33,7 +33,7 @@ public class OrderService {
     public CommonResponseDto createOrder(User user,
             OrderDto.CreateOrderRequestDto requestDto) throws Exception{
 
-        List<Cart> cartList = cartRepository.findAllByUserId(user.getId());
+        List<Cart> cartList = cartRepository.findAllByUserIdAndOrderIdIsNull(user.getId());
 
         if(cartList.isEmpty()){
             return new CommonResponseDto(HttpStatus.NOT_FOUND.value()
@@ -52,7 +52,7 @@ public class OrderService {
                     throw new Exception(ExceptionCode.NOT_FOUND_MENU.getMessage());
                 }
                 if(cart.getMenu().getStore()==null){
-                    throw new Exception(ExceptionCode.NOT_FOUND_MENU.getMessage());
+                    throw new Exception(ExceptionCode.NOT_FOUND_STORE.getMessage());
                 }
                 if(!storeRepository.existsById(cart.getMenu().getStore().getId())){
                     throw new Exception(ExceptionCode.NOT_FOUND_STORE.getMessage());
@@ -77,13 +77,14 @@ public class OrderService {
                 .cartList(cartList)
                 .build();
 
-        orderRepository.save(order);
+        Order saveOrder = orderRepository.save(order);
 
         for(Cart cart:cartList){
-            cartService.deleteCart(user,cart.getId());
+            cart.setOrder(saveOrder);
+            cartRepository.save(cart);
         }
 
-       return new CommonResponseDto(HttpStatus.OK.value(), "주문 생 완료");
+       return new CommonResponseDto(HttpStatus.OK.value(), "주문 생성 완료");
     }
 
     public CommonResponseDto deleteOrder(User user, Long orderId) throws Exception{
