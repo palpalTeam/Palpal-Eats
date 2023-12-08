@@ -70,4 +70,8 @@ public class Order {
     @OneToOne(mappedBy = "order")
     private Review review;
 
+    public String getFirstItemAndOthersCount() {
+
+        return cartList.get(0).getMenu().getName() + " 외 " + (cartList.size()-1) + "건";
+    }
 }

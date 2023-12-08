@@ -1,8 +1,6 @@
 package com.sparta.palpaleats.global.jwt;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.palpaleats.domain.user.entity.UserRoleEnum;
-import com.sparta.palpaleats.global.dto.CommonResponseDto;
 import com.sparta.palpaleats.global.jwt.repository.RefreshTokenRepository;
 import com.sparta.palpaleats.global.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
@@ -12,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;

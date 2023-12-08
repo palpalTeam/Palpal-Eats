@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 public enum ExceptionCode {
 
     // BAD_REQUEST
+    BAD_REQUEST_NOT_MATCH_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다"),
+
+    BAD_REQUEST_PASSWORD_ALREADY_USED(HttpStatus.BAD_REQUEST, "최근 3번안에 사용한 비밀번호로는 변경할 수 없습니다"),
 
     // CONFLICT
     CONFLICT_STORE_NAME(HttpStatus.CONFLICT, "해당 가게 이름은 이미 존재합니다."),
