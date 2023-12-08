@@ -1,5 +1,6 @@
 package com.sparta.palpaleats.domain.user.controller;
 
+import com.sparta.palpaleats.domain.order.dto.OrderResponseDto;
 import com.sparta.palpaleats.domain.user.dto.UserAddressUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserNicknameUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserOrderResponseDto;
@@ -11,6 +12,7 @@ import com.sparta.palpaleats.global.dto.CommonResponseDto;
 import com.sparta.palpaleats.global.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -92,5 +94,13 @@ public class UserController {
 
         UserOrderResponseDto responseDto = userService.getUserOrder(userDetails.getUser().getId(), orderId);
         return ResponseEntity.status(HttpStatus.OK.value()).body(responseDto);
+    }
+
+    @GetMapping("/myinfo/orders")
+    public ResponseEntity<List<OrderResponseDto>> getUserOrders(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        List<OrderResponseDto> orderResponseDto = userService.getUserOrders(userDetails.getUser().getId());
+
+        return ResponseEntity.status(HttpStatus.OK.value()).body(orderResponseDto);
     }
 }

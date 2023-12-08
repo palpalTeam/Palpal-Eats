@@ -1,5 +1,6 @@
 package com.sparta.palpaleats.domain.user.service;
 
+import com.sparta.palpaleats.domain.order.dto.OrderResponseDto;
 import com.sparta.palpaleats.domain.order.entity.Order;
 import com.sparta.palpaleats.domain.order.repository.OrderRepository;
 import com.sparta.palpaleats.domain.user.dto.UserAddressUpdateRequestDto;
@@ -15,6 +16,8 @@ import com.sparta.palpaleats.global.exception.CustomException;
 import com.sparta.palpaleats.global.exception.ExceptionCode;
 import com.sparta.palpaleats.global.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -119,10 +122,27 @@ public class UserService {
                 () -> new CustomException(ExceptionCode.NOT_FOUND_ORDER)
         );
 
-        if(!order.getUser().getId().equals(user.getId())) {
+        if (!order.getUser().getId().equals(user.getId())) {
             throw new CustomException(ExceptionCode.FORBIDDEN_YOUR_NOT_COME_IN);
         }
 
         return new UserOrderResponseDto(order);
+    }
+
+    public List<OrderResponseDto> getUserOrders(Long id) {
+        List<OrderResponseDto> orderResponseDtoList = new ArrayList<>();
+
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+
+        List<Order> orderList = orderRepository.findAllByUserId(user.getId());
+
+        for (Order order : orderList) {
+            OrderResponseDto orderResponseDto = new OrderResponseDto(order);
+            orderResponseDtoList.add(orderResponseDto);
+        }
+
+        return orderResponseDtoList;
     }
 }
