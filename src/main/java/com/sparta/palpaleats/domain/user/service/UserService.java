@@ -1,6 +1,7 @@
 package com.sparta.palpaleats.domain.user.service;
 
 import com.sparta.palpaleats.domain.user.dto.UserAddressUpdateRequestDto;
+import com.sparta.palpaleats.domain.user.dto.UserNicknameUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserSaveRequestDto;
 import com.sparta.palpaleats.domain.user.entity.User;
 import com.sparta.palpaleats.domain.user.entity.UserRoleEnum;
@@ -61,5 +62,17 @@ public class UserService {
         );
 
         user.setCurrentAddress(address);
+    }
+
+    @Transactional
+    public void updateUserNickname(Long id, UserNicknameUpdateRequestDto requestDto) {
+
+        String nickname = requestDto.getNickname();
+
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+
+        user.setNickname(nickname);
     }
 }
