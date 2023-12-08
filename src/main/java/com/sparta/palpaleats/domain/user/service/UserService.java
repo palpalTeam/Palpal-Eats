@@ -3,6 +3,8 @@ package com.sparta.palpaleats.domain.user.service;
 import com.sparta.palpaleats.domain.order.dto.OrderResponseDto;
 import com.sparta.palpaleats.domain.order.entity.Order;
 import com.sparta.palpaleats.domain.order.repository.OrderRepository;
+import com.sparta.palpaleats.domain.password.entity.Password;
+import com.sparta.palpaleats.domain.password.repository.PasswordRepository;
 import com.sparta.palpaleats.domain.user.dto.UserAddressUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserNicknameUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserOrderResponseDto;
@@ -28,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordRepository passwordRepository;
     private final PasswordEncoder passwordEncoder;
     private final OrderRepository orderRepository;
     private final JwtUtil jwtUtil;
@@ -35,10 +38,11 @@ public class UserService {
     public void signup(UserSaveRequestDto requestDto) {
 
         String email = requestDto.getEmail();
-        String password = passwordEncoder.encode(requestDto.getPassword());
+        String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
         String currentAddress = requestDto.getCurrentAddress();
         String nickname = requestDto.getNickname();
         Boolean isSeller = requestDto.getIsSeller();
+        User user;
 
         if (userRepository.existsByEmailOrNickname(email, nickname)) {
             throw new CustomException(ExceptionCode.CONFLICT_USER_EMAIL_NICKNAME_IN_USE);
@@ -46,14 +50,17 @@ public class UserService {
 
         if (isSeller) {
             UserRoleEnum role = UserRoleEnum.SELLER;
-            User user = new User(email, password, currentAddress, nickname, role);
+            user = new User(email, encodedPassword, currentAddress, nickname, role);
             userRepository.save(user);
         } else {
             UserRoleEnum role = UserRoleEnum.BUYER;
-            User user = new User(email, password, currentAddress, nickname, role);
+            user = new User(email, encodedPassword, currentAddress, nickname, role);
             userRepository.save(user);
         }
 
+        Password password = new Password(user);
+
+        passwordRepository.save(password);
     }
 
     public void logout(HttpServletRequest request) {
@@ -99,7 +106,22 @@ public class UserService {
             throw new CustomException(ExceptionCode.BAD_REQUEST_NOT_MATCH_PASSWORD);
         }
 
+        List<Password> passwordList = passwordRepository.findAllByUserIdOrderByCreatedAt(user.getId());
+
+        for (Password password : passwordList) {
+            if (passwordEncoder.matches(requestDto.getNewPassword(), password.getPassword())) {
+                throw new CustomException(ExceptionCode.BAD_REQUEST_PASSWORD_ALREADY_USED);
+            }
+        }
+
+        if(passwordList.size() >= 3) {
+            passwordRepository.delete(passwordList.get(0));
+        }
         user.setPassword(newPassword);
+
+        Password password = new Password(user);
+
+        passwordRepository.save(password);
     }
 
     public UserResponseDto getMyInfo(Long id) {
