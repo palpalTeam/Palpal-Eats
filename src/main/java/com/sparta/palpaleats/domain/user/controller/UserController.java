@@ -2,6 +2,7 @@ package com.sparta.palpaleats.domain.user.controller;
 
 import com.sparta.palpaleats.domain.user.dto.UserAddressUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserNicknameUpdateRequestDto;
+import com.sparta.palpaleats.domain.user.dto.UserPasswordUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserSaveRequestDto;
 import com.sparta.palpaleats.domain.user.service.UserService;
 import com.sparta.palpaleats.global.dto.CommonResponseDto;
@@ -57,6 +58,17 @@ public class UserController {
 
         userService.updateUserNickname(userDetails.getUser().getId(), requestDto);
 
-        return ResponseEntity.status(HttpStatus.OK.value()).body(new CommonResponseDto(HttpStatus.OK.value(), "닉네임이 수정되었습니다"));
+        return ResponseEntity.status(HttpStatus.OK.value())
+                .body(new CommonResponseDto(HttpStatus.OK.value(), "닉네임이 수정되었습니다"));
+    }
+
+    @PatchMapping("/myinfo/password")
+    public ResponseEntity<CommonResponseDto> updateUserPassword(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Valid @RequestBody UserPasswordUpdateRequestDto requestDto) {
+
+        userService.updateUserPassword(userDetails.getUser().getId(), requestDto);
+
+        return ResponseEntity.status(HttpStatus.OK.value()).body(new CommonResponseDto(HttpStatus.OK.value(), "비밀번호가 수정되었습니다"));
     }
 }

@@ -2,6 +2,7 @@ package com.sparta.palpaleats.domain.user.service;
 
 import com.sparta.palpaleats.domain.user.dto.UserAddressUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserNicknameUpdateRequestDto;
+import com.sparta.palpaleats.domain.user.dto.UserPasswordUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserSaveRequestDto;
 import com.sparta.palpaleats.domain.user.entity.User;
 import com.sparta.palpaleats.domain.user.entity.UserRoleEnum;
@@ -74,5 +75,22 @@ public class UserService {
         );
 
         user.setNickname(nickname);
+    }
+
+    @Transactional
+    public void updateUserPassword(Long id, UserPasswordUpdateRequestDto requestDto) {
+
+        String oldPassword = requestDto.getOldPassword();
+        String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
+
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new CustomException(ExceptionCode.BAD_REQUEST_NOT_MATCH_PASSWORD);
+        }
+
+        user.setPassword(newPassword);
     }
 }
