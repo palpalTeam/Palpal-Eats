@@ -46,4 +46,9 @@ public class Menu {
     @ManyToOne
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
+
+    public void updatePicture(String[] urlArr) {
+        this.menuPictureUrl = urlArr[0];
+        this.menuPicturePath = urlArr[1];
+    }
 }

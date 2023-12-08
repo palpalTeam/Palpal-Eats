@@ -12,8 +12,10 @@ import com.sparta.palpaleats.global.common.CommonResponseCode;
 import com.sparta.palpaleats.global.common.CommonResponseDto;
 import com.sparta.palpaleats.global.exception.CustomException;
 import com.sparta.palpaleats.global.exception.ExceptionCode;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -50,13 +52,27 @@ public class MenuService {
         return menuRepository.findAllByStoreId(storeId).stream().map(MenuResponseDto::new).toList();
     }
 
-
     public MenuResponseDto getMenu(Long storeId, Long menuId) {
         Menu menu = findMenu(menuId);
         if(!Objects.equals(menu.getStore().getId(), storeId)){
             throw new CustomException(ExceptionCode.NOT_MATCH_STORE);
         }
         return new MenuResponseDto(menu);
+    }
+
+    @Transactional
+    public CommonResponseDto updateMenuPicture(Long storeId, Long menuId, MultipartFile multipartFile) throws UnsupportedEncodingException {
+        Menu menu = findMenu(menuId);
+        Store store = findStore(storeId);
+        if(!Objects.equals(menu.getStore().getId(), storeId)){
+            throw new CustomException(ExceptionCode.NOT_MATCH_STORE);
+        }
+        if (s3Util.validateFileExists(multipartFile)) {
+            s3Service.deleteImage(menu.getMenuPicturePath());
+            String[] urlArr = s3Service.saveFile(store.getName() + "/menu/" + menu.getName(), multipartFile);
+            menu.updatePicture(urlArr);
+        }
+        return new CommonResponseDto(CommonResponseCode.MENU_UPDATE);
     }
 
     private Store findStore(Long id){

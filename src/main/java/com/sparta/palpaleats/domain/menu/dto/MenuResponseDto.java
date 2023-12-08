@@ -10,11 +10,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MenuResponseDto {
     private String name;
+    private Integer price;
     private String category;
     private String storePictureUrl;
 
     public MenuResponseDto(Menu menu){
         this.name = menu.getName();
+        this.price = menu.getPrice();
         this.category = menu.getCategory();
         this.storePictureUrl = menu.getMenuPictureUrl();
     }

@@ -4,13 +4,16 @@ import com.sparta.palpaleats.domain.menu.dto.MenuRequestDto;
 import com.sparta.palpaleats.domain.menu.dto.MenuResponseDto;
 import com.sparta.palpaleats.domain.menu.service.MenuService;
 import com.sparta.palpaleats.domain.store.dto.StoreResponseDto;
+import com.sparta.palpaleats.global.common.CommonResponseCode;
 import com.sparta.palpaleats.global.common.CommonResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
+import java.security.PublicKey;
 import java.util.List;
 
 @RestController
@@ -38,6 +41,10 @@ public class MenuController {
         return ResponseEntity.ok().body(menuResponseDto);
     }
 
-
+    @PatchMapping("{storeId}/menu/{menuId}")
+    public ResponseEntity<CommonResponseDto> updateMenuPicture(@PathVariable Long storeId, @PathVariable Long menuId, @RequestParam("file") MultipartFile multipartFile) throws UnsupportedEncodingException {
+        CommonResponseDto commonResponseDto = menuService.updateMenuPicture(storeId,menuId, multipartFile);
+        return ResponseEntity.ok().body(commonResponseDto);
+    }
 
 }
