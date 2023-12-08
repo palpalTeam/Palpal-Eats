@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -50,14 +51,21 @@ public class MenuService {
     }
 
 
-
-
-
-
-
+    public MenuResponseDto getMenu(Long storeId, Long menuId) {
+        Menu menu = findMenu(menuId);
+        if(!Objects.equals(menu.getStore().getId(), storeId)){
+            throw new CustomException(ExceptionCode.NOT_MATCH_STORE);
+        }
+        return new MenuResponseDto(menu);
+    }
 
     private Store findStore(Long id){
         return storeRepository.findById(id).orElseThrow(() ->
                 new CustomException(ExceptionCode.NOT_FOUND_STORE));
+    }
+
+    private Menu findMenu(Long menuId) {
+        return menuRepository.findById(menuId).orElseThrow(() ->
+                new CustomException(ExceptionCode.NOT_FOUND_MENU));
     }
 }

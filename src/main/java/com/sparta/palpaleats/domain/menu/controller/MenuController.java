@@ -26,11 +26,18 @@ public class MenuController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseDto);
     }
 
-    @GetMapping("{storeId}/menu")
+    @GetMapping("/{storeId}/menu")
     public ResponseEntity<List<MenuResponseDto>> getMenuList(@PathVariable Long storeId){
         List<MenuResponseDto> menuResponseDtoList = menuService.getMenuList(storeId);
         return ResponseEntity.ok().body(menuResponseDtoList);
     }
+
+    @GetMapping("{storeId}/menu/{menuId}")
+    public ResponseEntity<MenuResponseDto> getMenu(@PathVariable Long storeId, @PathVariable Long menuId){
+        MenuResponseDto menuResponseDto = menuService.getMenu(storeId, menuId);
+        return ResponseEntity.ok().body(menuResponseDto);
+    }
+
 
 
 }
