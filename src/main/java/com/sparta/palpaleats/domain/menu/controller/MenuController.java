@@ -64,4 +64,11 @@ public class MenuController {
         CommonResponseDto commonResponseDto = menuService.updateMenuCategory(storeId, menuId, category);
         return ResponseEntity.ok().body(commonResponseDto);
     }
+
+    @DeleteMapping("{storeId}/menu/{menuId}")
+    public ResponseEntity<CommonResponseDto> deleteMenu(@PathVariable Long storeId, @PathVariable Long menuId){
+        CommonResponseDto commonResponseDto = menuService.deleteMenu(storeId, menuId);
+        return ResponseEntity.ok().body(commonResponseDto);
+    }
+
 }

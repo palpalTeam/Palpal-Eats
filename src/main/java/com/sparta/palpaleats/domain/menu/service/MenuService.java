@@ -105,6 +105,17 @@ public class MenuService {
         return new CommonResponseDto(CommonResponseCode.MENU_UPDATE);
     }
 
+    public CommonResponseDto deleteMenu(Long storeId, Long menuId) {
+        Menu menu = findMenu(menuId);
+        Store store = findStore(storeId);
+        if(!Objects.equals(menu.getStore().getId(), storeId)){
+            throw new CustomException(ExceptionCode.NOT_MATCH_STORE);
+        }
+        s3Service.deleteImage(menu.getMenuPicturePath());
+        menuRepository.delete(menu);
+        store.removeMenuList(menu);
+        return new CommonResponseDto(CommonResponseCode.MENU_DELETE);
+    }
 
     private Store findStore(Long id){
         return storeRepository.findById(id).orElseThrow(() ->
@@ -115,5 +126,4 @@ public class MenuService {
         return menuRepository.findById(menuId).orElseThrow(() ->
                 new CustomException(ExceptionCode.NOT_FOUND_MENU));
     }
-
 }
