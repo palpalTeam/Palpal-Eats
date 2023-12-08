@@ -86,9 +86,9 @@ public class StoreController {
         return ResponseEntity.ok().body(storeResponseDto);
     }
 
-//    @DeleteMapping("/{storeId}")
-//    public ResponseEntity<CommonResponseDto> deleteStore(@PathVariable Long storeId) {
-//        CommonResponseDto commonResponseDto = storeService.deleteStore(storeId);
-//        return ResponseEntity.ok().body(commonResponseDto);
-//    }
+    @DeleteMapping("/{storeId}")
+    public ResponseEntity<CommonResponseDto> deleteStore(@PathVariable Long storeId) {
+        CommonResponseDto commonResponseDto = storeService.deleteStore(storeId);
+        return ResponseEntity.ok().body(commonResponseDto);
+    }
 }

@@ -97,5 +97,4 @@ public class Store {
         }
         return String.valueOf(this.reviewList.size());
     }
-
 }

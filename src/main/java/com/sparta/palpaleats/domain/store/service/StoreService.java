@@ -1,5 +1,7 @@
 package com.sparta.palpaleats.domain.store.service;
 
+import com.sparta.palpaleats.domain.menu.entity.Menu;
+import com.sparta.palpaleats.domain.menu.repository.MenuRepository;
 import com.sparta.palpaleats.domain.review.entity.Review;
 import com.sparta.palpaleats.domain.s3.S3Service;
 import com.sparta.palpaleats.domain.s3.S3Util;
@@ -24,6 +26,7 @@ import java.util.List;
 public class StoreService {
 
     private final StoreRepository storeRepository;
+    private final MenuRepository menuRepository;
     private final S3Service s3Service;
 
     private final S3Util s3Util;
@@ -120,6 +123,17 @@ public class StoreService {
         return convertStoreResponseDto(store);
     }
 
+
+    public CommonResponseDto deleteStore(Long storeId) {
+        Store store = findStore(storeId);
+        for(Menu menu : store.getMenuList()){
+            s3Service.deleteImage(menu.getMenuPicturePath());
+            menuRepository.delete(menu);
+        }
+        storeRepository.delete(store);
+        return new CommonResponseDto(CommonResponseCode.STORE_DELETE);
+    }
+
     private Store findStore(Long id) {
         return storeRepository.findById(id).orElseThrow(() ->
                 new CustomException(ExceptionCode.NOT_FOUND_STORE));
@@ -136,5 +150,4 @@ public class StoreService {
         storeResponseDto.setOpenStatus(store.isOpenStatus());
         return storeResponseDto;
     }
-
 }
