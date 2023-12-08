@@ -1,21 +1,14 @@
 package com.sparta.palpaleats.domain.menu.entity;
 
 import com.sparta.palpaleats.domain.store.entity.Store;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -42,6 +35,9 @@ public class Menu {
     @Column(nullable = false)
     private boolean isDeleted;
 
+    @Column
+    String menuPicturePath;
+
     @Column(nullable = false)
     @CreatedDate
     private LocalDateTime createdAt;
@@ -53,4 +49,9 @@ public class Menu {
     @ManyToOne
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
+
+    public void updatePicture(String[] urlArr) {
+        this.menuPictureUrl = urlArr[0];
+        this.menuPicturePath = urlArr[1];
+    }
 }
