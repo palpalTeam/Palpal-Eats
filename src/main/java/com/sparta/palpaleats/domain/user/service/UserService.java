@@ -1,5 +1,6 @@
 package com.sparta.palpaleats.domain.user.service;
 
+import com.sparta.palpaleats.domain.user.dto.UserAddressUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserSaveRequestDto;
 import com.sparta.palpaleats.domain.user.entity.User;
 import com.sparta.palpaleats.domain.user.entity.UserRoleEnum;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,11 +30,11 @@ public class UserService {
         String nickname = requestDto.getNickname();
         Boolean isSeller = requestDto.getIsSeller();
 
-        if(userRepository.existsByEmailOrNickname(email, nickname)) {
+        if (userRepository.existsByEmailOrNickname(email, nickname)) {
             throw new CustomException(ExceptionCode.CONFLICT_USER_EMAIL_NICKNAME_IN_USE);
         }
 
-        if(isSeller) {
+        if (isSeller) {
             UserRoleEnum role = UserRoleEnum.SELLER;
             User user = new User(email, password, currentAddress, nickname, role);
             userRepository.save(user);
@@ -47,5 +49,17 @@ public class UserService {
     public void logout(HttpServletRequest request) {
 
         jwtUtil.deleteRefreshToken(request);
+    }
+
+    @Transactional
+    public void updateUserAddress(Long userId, UserAddressUpdateRequestDto requestDto) {
+
+        String address = requestDto.getAddress();
+
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+
+        user.setCurrentAddress(address);
     }
 }

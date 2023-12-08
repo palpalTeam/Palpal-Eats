@@ -1,13 +1,16 @@
 package com.sparta.palpaleats.domain.user.controller;
 
+import com.sparta.palpaleats.domain.user.dto.UserAddressUpdateRequestDto;
 import com.sparta.palpaleats.domain.user.dto.UserSaveRequestDto;
 import com.sparta.palpaleats.domain.user.service.UserService;
 import com.sparta.palpaleats.global.dto.CommonResponseDto;
+import com.sparta.palpaleats.global.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,5 +37,15 @@ public class UserController {
         userService.logout(request);
         return ResponseEntity.status(HttpStatus.OK.value())
                 .body(new CommonResponseDto(HttpStatus.OK.value(), "로그아웃이 완료되었습니다"));
+    }
+
+    @PatchMapping("/myinfo/address")
+    public ResponseEntity<CommonResponseDto> updateUserAddress(@AuthenticationPrincipal
+    UserDetailsImpl userDetails, @Valid @RequestBody UserAddressUpdateRequestDto requestDto) {
+
+        userService.updateUserAddress(userDetails.getUser().getId(), requestDto);
+
+        return ResponseEntity.status(HttpStatus.OK.value())
+                .body(new CommonResponseDto(HttpStatus.OK.value(), "주소가 수정되었습니다"));
     }
 }
