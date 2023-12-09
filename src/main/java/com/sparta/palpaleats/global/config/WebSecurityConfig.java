@@ -76,6 +76,9 @@ public class WebSecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers("/reviews/**").authenticated()
                         .requestMatchers("/orders/**").authenticated()
+                        .requestMatchers("/myinfo/**").authenticated()
+                        .requestMatchers("/backoffice/**").hasRole("SELLER")
+                        .requestMatchers("/carts/**").authenticated()
                         .anyRequest().permitAll()
         );
 

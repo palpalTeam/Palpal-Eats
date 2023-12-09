@@ -52,6 +52,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 String currentRefreshToken = JwtUtil.BEARER_PREFIX + refreshToken;
                 jwtUtil.addJwtToHeader(newAccessToken, currentRefreshToken, response);
             }
+        } else {
+            jwtUtil.validateTokenAndThrow(accessToken);
         }
 
         filterChain.doFilter(request, response);
