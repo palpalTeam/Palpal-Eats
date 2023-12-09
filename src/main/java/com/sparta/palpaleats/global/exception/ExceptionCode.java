@@ -12,7 +12,12 @@ public enum ExceptionCode {
     BAD_REQUEST_NOT_MATCH_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다"),
 
     BAD_REQUEST_PASSWORD_ALREADY_USED(HttpStatus.BAD_REQUEST, "최근 3번안에 사용한 비밀번호로는 변경할 수 없습니다"),
-    BAD_REQUEST_NOT_MATCH_STORE(HttpStatus.BAD_REQUEST, "해당 가게에 해당 메뉴가 없습니다."),
+
+//    BAD_REQUEST_NOT_MATCH_STORE(HttpStatus.BAD_REQUEST, "해당 가게에 해당 메뉴가 없습니다."),
+
+    BAD_REQUEST_NOT_MATCH_ORDER(HttpStatus.BAD_REQUEST, "주문이 일치하지 않습니다"),
+
+    BAD_REQUEST_NOT_MATCH_STORE(HttpStatus.BAD_REQUEST, "가게가 일치하지 않습니다"),
 
     // UNAUTHORIZED 401
     UNAUTHORIZED_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "토큰의 유효기간이 만료 되었습니다"),
