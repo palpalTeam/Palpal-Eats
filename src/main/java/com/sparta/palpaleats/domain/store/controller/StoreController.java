@@ -86,8 +86,8 @@ public class StoreController {
     }
 
     @GetMapping("/total")
-    public ResponseEntity<List<StoreResponseDto>> getTotalStoreList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        List<StoreResponseDto> storeResponseDtoList = storeService.getTotalStoreList(userDetails.getUser().getId());
+    public ResponseEntity<List<StoreResponseDto>> getTotalStoreList() {
+        List<StoreResponseDto> storeResponseDtoList = storeService.getTotalStoreList();
         return ResponseEntity.ok().body(storeResponseDtoList);
     }
 
@@ -99,8 +99,8 @@ public class StoreController {
     }
 
     @GetMapping("/{storeId}")
-    public ResponseEntity<StoreResponseDto> getStore(@AuthenticationPrincipal UserDetailsImpl userDetails,@PathVariable Long storeId) {
-        StoreResponseDto storeResponseDto = storeService.getStore(userDetails.getUser().getId() ,storeId);
+    public ResponseEntity<StoreResponseDto> getStore(@PathVariable Long storeId) {
+        StoreResponseDto storeResponseDto = storeService.getStore(storeId);
         return ResponseEntity.ok().body(storeResponseDto);
     }
 
