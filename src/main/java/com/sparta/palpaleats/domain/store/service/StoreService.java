@@ -156,10 +156,7 @@ public class StoreService {
     }
 
     // User 든 Seller든 모두 가능
-    public List<StoreResponseDto> getTotalStoreList(Long id) {
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
-        );
+    public List<StoreResponseDto> getTotalStoreList() {
         return storeRepository.findAllByIsDeletedFalse().stream().map(this::convertStoreResponseDto).toList();
     }
     public List<StoreResponseDto> getStoreList(Long id) {
@@ -172,10 +169,7 @@ public class StoreService {
         return storeRepository.findAllByUserIdAndIsDeletedFalse(id).stream().map(this::convertStoreResponseDto).toList();
     }
 
-    public StoreResponseDto getStore(Long id, Long storeId) {
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
-        );
+    public StoreResponseDto getStore(Long storeId) {
         Store store = findStore(storeId);
         if(store.isDeleted()){
             throw new CustomException(ExceptionCode.NOT_FOUND_STORE);
