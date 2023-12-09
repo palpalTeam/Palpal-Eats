@@ -1,4 +1,4 @@
-package com.sparta.palpaleats.domain.review.entity.dto;
+package com.sparta.palpaleats.domain.review.dto;
 
 import java.util.List;
 import lombok.EqualsAndHashCode;

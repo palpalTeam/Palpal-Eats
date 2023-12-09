@@ -1,8 +1,7 @@
 package com.sparta.palpaleats.domain.review.entity;
 
-import com.sparta.palpaleats.domain.cart.entity.Cart;
 import com.sparta.palpaleats.domain.order.entity.Order;
-import com.sparta.palpaleats.domain.review.entity.dto.ReviewRequestDto;
+import com.sparta.palpaleats.domain.review.dto.ReviewRequestDto;
 import com.sparta.palpaleats.domain.store.entity.Store;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

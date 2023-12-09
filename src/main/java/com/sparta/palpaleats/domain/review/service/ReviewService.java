@@ -1,11 +1,11 @@
-package com.sparta.palpaleats.domain.review.entity.service;
+package com.sparta.palpaleats.domain.review.service;
 
 import com.sparta.palpaleats.domain.order.entity.Order;
 import com.sparta.palpaleats.domain.order.repository.OrderRepository;
 import com.sparta.palpaleats.domain.review.entity.Review;
-import com.sparta.palpaleats.domain.review.entity.dto.ReviewRequestDto;
-import com.sparta.palpaleats.domain.review.entity.dto.ReviewResponseDto;
-import com.sparta.palpaleats.domain.review.entity.repository.ReviewRepository;
+import com.sparta.palpaleats.domain.review.dto.ReviewRequestDto;
+import com.sparta.palpaleats.domain.review.dto.ReviewResponseDto;
+import com.sparta.palpaleats.domain.review.repository.ReviewRepository;
 import com.sparta.palpaleats.domain.store.entity.Store;
 import com.sparta.palpaleats.domain.store.repository.StoreRepository;
 import com.sparta.palpaleats.domain.user.entity.User;

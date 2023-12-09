@@ -1,9 +1,9 @@
-package com.sparta.palpaleats.domain.review.entity.controller;
+package com.sparta.palpaleats.domain.review.controller;
 
-import com.sparta.palpaleats.domain.review.entity.dto.ReviewListResponseDto;
-import com.sparta.palpaleats.domain.review.entity.dto.ReviewRequestDto;
-import com.sparta.palpaleats.domain.review.entity.dto.ReviewResponseDto;
-import com.sparta.palpaleats.domain.review.entity.service.ReviewService;
+import com.sparta.palpaleats.domain.review.dto.ReviewListResponseDto;
+import com.sparta.palpaleats.domain.review.dto.ReviewRequestDto;
+import com.sparta.palpaleats.domain.review.dto.ReviewResponseDto;
+import com.sparta.palpaleats.domain.review.service.ReviewService;
 import com.sparta.palpaleats.global.dto.CommonResponseDto;
 import com.sparta.palpaleats.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
@@ -32,7 +32,7 @@ public class ReviewController {
 
     @PostMapping("/myinfo/orders/{orderId}/review") // 리뷰 작성
     public ResponseEntity<CommonResponseDto> postReview(
-            @RequestBody @Valid ReviewRequestDto reviewRequestDto, @PathVariable("orderId") Long orderId,
+            @RequestBody @Valid ReviewRequestDto reviewRequestDto, @PathVariable Long orderId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         reviewService.creatReview(reviewRequestDto, orderId, userDetails.getUser().getId());
