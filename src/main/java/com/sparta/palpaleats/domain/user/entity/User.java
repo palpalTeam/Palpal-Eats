@@ -81,4 +81,9 @@ public class User {
         this.nickname = nickname;
         this.role = role;
     }
+
+    public void addStoreList(Store store) {
+        this.storeList.add(store);
+        store.setUser(this);
+    }
 }

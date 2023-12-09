@@ -42,8 +42,11 @@ public class Store {
     @Column(nullable = false)
     private String address;
 
-    @Column
+    @Column(length = 1000)
     private String storePictureUrl;
+
+    @Column
+    private String storePicturePath;
 
     @Column(nullable = false, length = 20)
     private String phone;
@@ -77,4 +80,26 @@ public class Store {
 
     @OneToMany(mappedBy = "store")
     private List<Review> reviewList = new ArrayList<>();
+
+    public void updatePicture(String[] urlArr) {
+        this.storePictureUrl = urlArr[0];
+        this.storePicturePath = urlArr[1];
+    }
+
+    public Double getAverageReviewRating(){
+        int sum = 0;
+        if(this.reviewList.size() == 0)
+            return (double) 0;
+        for(Review review : this.reviewList){
+            sum += review.getRating();
+        }
+        return (double) (sum / reviewList.size());
+    }
+
+    public String getReviewCount(){
+        if(this.reviewList.size() > 100){
+            return "100+";
+        }
+        return String.valueOf(this.reviewList.size());
+    }
 }
