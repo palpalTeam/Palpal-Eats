@@ -44,15 +44,22 @@ public class OrderService {
 
         try{
             for(Cart cart:cartList){
+                // cart not found
                 if(!cartRepository.existsById(cart.getId())){
                     throw new Exception(ExceptionCode.NOT_FOUND_CART.getMessage());
                 }
+
+                // menu not found
                 if(cart.getMenu()==null){
                     throw new Exception(ExceptionCode.NOT_FOUND_MENU.getMessage());
                 }
-                if(!menuRepository.existsById(cart.getMenu().getId())){
+                Menu menu = menuRepository.findById(cart.getMenu().getId())
+                        .orElseThrow(()->new Exception(ExceptionCode.NOT_FOUND_MENU.getMessage()));
+                if(menu.isDeleted()){
                     throw new Exception(ExceptionCode.NOT_FOUND_MENU.getMessage());
                 }
+
+                // store not found
                 if(cart.getMenu().getStore()==null){
                     throw new Exception(ExceptionCode.NOT_FOUND_STORE.getMessage());
                 }
