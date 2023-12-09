@@ -42,7 +42,7 @@ public class MenuController {
         return ResponseEntity.ok().body(menuResponseDto);
     }
 
-    @PatchMapping("{storeId}/menu/{menuId}")
+    @PatchMapping("{storeId}/menu/{menuId}/picture")
     public ResponseEntity<CommonResponseDto> updateMenuPicture(@PathVariable Long storeId,
                                                                @PathVariable Long menuId,
                                                                @RequestParam("file") MultipartFile multipartFile,
@@ -51,7 +51,7 @@ public class MenuController {
         return ResponseEntity.ok().body(commonResponseDto);
     }
 
-    @PatchMapping("{storeId}/menu/{menuId}")
+    @PatchMapping("{storeId}/menu/{menuId}/name")
     public ResponseEntity<CommonResponseDto> updateMenuName(@PathVariable Long storeId,
                                                             @PathVariable Long menuId,
                                                             @RequestParam("name") String name,
@@ -60,7 +60,7 @@ public class MenuController {
         return ResponseEntity.ok().body(commonResponseDto);
     }
 
-    @PatchMapping("{storeId}/menu/{menuId}")
+    @PatchMapping("{storeId}/menu/{menuId}/price")
     public ResponseEntity<CommonResponseDto> updateMenuPrice(@PathVariable Long storeId,
                                                              @PathVariable Long menuId,
                                                              @RequestParam("price") Integer price,
@@ -69,7 +69,7 @@ public class MenuController {
         return ResponseEntity.ok().body(commonResponseDto);
     }
 
-    @PatchMapping("{storeId}/menu/{menuId}")
+    @PatchMapping("{storeId}/menu/{menuId}/category")
     public ResponseEntity<CommonResponseDto> updateMenuCategory(@PathVariable Long storeId,
                                                                 @PathVariable Long menuId,
                                                                 @RequestParam("category") String category,
@@ -78,7 +78,7 @@ public class MenuController {
         return ResponseEntity.ok().body(commonResponseDto);
     }
 
-    @DeleteMapping("{storeId}/menu/{menuId}")
+    @PatchMapping("{storeId}/menu/{menuId}/delete")
     public ResponseEntity<CommonResponseDto> deleteMenu(@PathVariable Long storeId,
                                                         @PathVariable Long menuId,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails){

@@ -156,12 +156,12 @@ public class MenuService {
     }
 
     private Store findStore(Long id){
-        return storeRepository.findByIdAndIsDeleteFalse(id).orElseThrow(() ->
+        return storeRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() ->
                 new CustomException(ExceptionCode.NOT_FOUND_STORE));
     }
 
     private Menu findMenu(Long menuId) {
-        return menuRepository.findByIdAndIsDeleteFalse(menuId).orElseThrow(() ->
+        return menuRepository.findByIdAndIsDeletedFalse(menuId).orElseThrow(() ->
                 new CustomException(ExceptionCode.NOT_FOUND_MENU));
     }
 }
