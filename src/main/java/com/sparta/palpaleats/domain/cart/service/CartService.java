@@ -111,21 +111,21 @@ public class CartService {
             Menu menu;
             Store store;
             try{
-                // not found menu
+                // store not found
                 if(cart.getMenu()==null){
                     throw new Exception(ExceptionCode.NOT_FOUND_MENU.getMessage());
                 }
                 menu = menuRepository.findById(cart.getMenu().getId())
                         .orElseThrow(()->new Exception(ExceptionCode.NOT_FOUND_MENU.getMessage()));
 
-                // not found store
+                // store not found
                 if(menu.getStore()==null){
                     throw new Exception(ExceptionCode.NOT_FOUND_STORE.getMessage());
                 }
                 store = storeRepository.findById(menu.getStore().getId())
                         .orElseThrow(()->new Exception(ExceptionCode.NOT_FOUND_STORE.getMessage()));
             }catch (Exception e){
-                System.out.println(e.getMessage());
+                System.out.println("Error 404: " + e.getMessage());
                 return null;
             }
 

@@ -96,14 +96,24 @@ public class OrderService {
         try{
             order = orderRepository.findById(orderId)
                     .orElseThrow(()->new Exception(ExceptionCode.NOT_FOUND_ORDER.getMessage()));
+        }catch (Exception e){
+            return new CommonResponseDto(HttpStatus.NOT_FOUND.value(), e.getMessage());
+        }
+
+        try{
             if(order.isDeleted()){
                 throw new Exception(ExceptionCode.CONFLICT_ORDER_ALREADY_CANCELED.getMessage());
             }
+        }catch (Exception e){
+            return new CommonResponseDto(HttpStatus.CONFLICT.value(), e.getMessage());
+        }
+
+        try{
             if(!Objects.equals(order.getUser().getId(), user.getId())){
                 throw new Exception(ExceptionCode.FORBIDDEN_YOUR_NOT_COME_IN.getMessage());
             }
         }catch (Exception e){
-            return new CommonResponseDto(HttpStatus.NOT_FOUND.value(), e.getMessage());
+            return new CommonResponseDto(HttpStatus.FORBIDDEN.value(), e.getMessage());
         }
 
         order.setDeleted(true);
