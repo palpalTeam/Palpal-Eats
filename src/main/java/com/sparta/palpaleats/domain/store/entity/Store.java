@@ -4,16 +4,8 @@ import com.sparta.palpaleats.domain.menu.entity.Menu;
 import com.sparta.palpaleats.domain.order.entity.Order;
 import com.sparta.palpaleats.domain.review.entity.Review;
 import com.sparta.palpaleats.domain.user.entity.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +67,7 @@ public class Store {
     @OneToMany(mappedBy = "store")
     private List<Order> orederList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "store")
+    @OneToMany(mappedBy = "store", cascade = {CascadeType.PERSIST})
     private List<Menu> menuList = new ArrayList<>();
 
     @OneToMany(mappedBy = "store")
@@ -101,5 +93,10 @@ public class Store {
             return "100+";
         }
         return String.valueOf(this.reviewList.size());
+    }
+
+    public void addMenuList(Menu menu) {
+        this.menuList.add(menu);
+        menu.setStore(this);
     }
 }
