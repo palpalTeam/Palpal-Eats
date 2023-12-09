@@ -12,11 +12,11 @@ import com.sparta.palpaleats.domain.user.entity.User;
 import com.sparta.palpaleats.domain.user.repository.UserRepository;
 import com.sparta.palpaleats.global.exception.CustomException;
 import com.sparta.palpaleats.global.exception.ExceptionCode;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -93,7 +93,13 @@ public class ReviewService {
             throw new CustomException(ExceptionCode.NOT_FOUND_USER);
         }
 
-        List<ReviewResponseDto> reviewResponseDtoList = reviewRepository.findAllByUserId(userId).stream().map(ReviewResponseDto::new).toList();
+        List<Order> orderList = orderRepository.findAllByUserId(userId);
+        List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
+        for(Order order : orderList) {
+            if(order.getUser().getId().equals(userId)) {
+                reviewResponseDtoList.add(new ReviewResponseDto(order.getReview()));
+            }
+        }
 
         return reviewResponseDtoList;
     }

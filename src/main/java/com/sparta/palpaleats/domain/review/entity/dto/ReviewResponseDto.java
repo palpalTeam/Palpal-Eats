@@ -1,13 +1,10 @@
 package com.sparta.palpaleats.domain.review.entity.dto;
 
 import com.sparta.palpaleats.domain.review.entity.Review;
+import java.time.format.DateTimeFormatter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.sql.Time;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
