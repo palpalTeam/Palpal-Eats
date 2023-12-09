@@ -44,15 +44,22 @@ public class OrderService {
 
         try{
             for(Cart cart:cartList){
+                // cart not found
                 if(!cartRepository.existsById(cart.getId())){
                     throw new Exception(ExceptionCode.NOT_FOUND_CART.getMessage());
                 }
+
+                // menu not found
                 if(cart.getMenu()==null){
                     throw new Exception(ExceptionCode.NOT_FOUND_MENU.getMessage());
                 }
-                if(!menuRepository.existsById(cart.getMenu().getId())){
+                Menu menu = menuRepository.findById(cart.getMenu().getId())
+                        .orElseThrow(()->new Exception(ExceptionCode.NOT_FOUND_MENU.getMessage()));
+                if(menu.isDeleted()){
                     throw new Exception(ExceptionCode.NOT_FOUND_MENU.getMessage());
                 }
+
+                // store not found
                 if(cart.getMenu().getStore()==null){
                     throw new Exception(ExceptionCode.NOT_FOUND_STORE.getMessage());
                 }
@@ -96,14 +103,24 @@ public class OrderService {
         try{
             order = orderRepository.findById(orderId)
                     .orElseThrow(()->new Exception(ExceptionCode.NOT_FOUND_ORDER.getMessage()));
+        }catch (Exception e){
+            return new CommonResponseDto(HttpStatus.NOT_FOUND.value(), e.getMessage());
+        }
+
+        try{
             if(order.isDeleted()){
                 throw new Exception(ExceptionCode.CONFLICT_ORDER_ALREADY_CANCELED.getMessage());
             }
+        }catch (Exception e){
+            return new CommonResponseDto(HttpStatus.CONFLICT.value(), e.getMessage());
+        }
+
+        try{
             if(!Objects.equals(order.getUser().getId(), user.getId())){
                 throw new Exception(ExceptionCode.FORBIDDEN_YOUR_NOT_COME_IN.getMessage());
             }
         }catch (Exception e){
-            return new CommonResponseDto(HttpStatus.NOT_FOUND.value(), e.getMessage());
+            return new CommonResponseDto(HttpStatus.FORBIDDEN.value(), e.getMessage());
         }
 
         order.setDeleted(true);
