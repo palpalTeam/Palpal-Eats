@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.Map;
 
 import static com.sparta.palpaleats.domain.user.entity.UserRoleEnum.SELLER;
 
@@ -197,6 +196,20 @@ public class StoreService {
         }
         return convertStoreResponseDto(store);
     }
+
+    @Transactional
+    public CommonResponseDto deleteStore(Long id, Long storeId) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+        if(!user.getRole().equals(SELLER)){
+            throw new CustomException(ExceptionCode.FORBIDDEN_YOUR_NOT_SELLER);
+        }
+        Store store = findStore(storeId);
+        store.setDeleted(true);
+        return new CommonResponseDto(CommonResponseCode.STORE_DELETE);
+    }
+
     private Store findStore(Long id) {
         return storeRepository.findById(id).orElseThrow(() ->
                 new CustomException(ExceptionCode.NOT_FOUND_STORE));
@@ -213,5 +226,4 @@ public class StoreService {
         storeResponseDto.setOpenStatus(store.isOpenStatus());
         return storeResponseDto;
     }
-
 }

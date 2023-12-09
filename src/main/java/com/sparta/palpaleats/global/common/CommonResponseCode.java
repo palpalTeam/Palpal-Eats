@@ -12,6 +12,8 @@ public enum CommonResponseCode {
     STORE_CREATE(HttpStatus.CREATED, "가게 등록에 성공했습니다."),
     // Store_UPDATE
     STORE_UPDATE(HttpStatus.OK, "가게 변경에 성공했습니다."),
+    // Store_DELETE
+    STORE_DELETE(HttpStatus.OK, "가게 삭제에 성공했습니다"),
     //Menu_ADD
     MENU_CREATE(HttpStatus.CREATED, "메뉴 등록에 성공했습니다.");
 

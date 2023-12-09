@@ -111,4 +111,10 @@ public class StoreController {
         return ResponseEntity.ok().body(storeResponseDto);
     }
 
+    @PatchMapping("{storeId}/delete")
+    public ResponseEntity<CommonResponseDto> deleteStore(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long storeId){
+        CommonResponseDto commonResponseDto = storeService.deleteStore(userDetails.getUser().getId(), storeId);
+        return ResponseEntity.ok().body(commonResponseDto);
+    }
+
 }
