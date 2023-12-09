@@ -30,7 +30,7 @@ public class BackOfficeService {
     private final StoreRepository storeRepository;
     private final OrderRepository orderRepository;
 
-    public OrderDto.GetOrderResponseDto getOrder(User user,Long storeId, Long orderId) throws Exception{
+    public CommonResponseDto getOrder(User user,Long storeId, Long orderId) throws Exception{
         OrderDto.GetOrderResponseDto orderDto;
         List<OrderDto.GetCartResponseDto> cartDtoList = new ArrayList<>();
 
@@ -68,11 +68,9 @@ public class BackOfficeService {
 
         }catch (Exception e){
             if(errorCode!=0){
-                System.out.println("Error "+ errorCode +": " + e.getMessage());
-            }else{
-                System.out.println("Error 404: " + e.getMessage());
+                return new CommonResponseDto(errorCode, e.getMessage());
             }
-            return null;
+            return new CommonResponseDto(HttpStatus.NOT_FOUND.value(), e.getMessage());
         }
 
         for(Cart cart:cartList){
@@ -97,10 +95,10 @@ public class BackOfficeService {
                 .cartList(cartDtoList)
                 .build();
 
-        return orderDto;
+        return new CommonResponseDto(HttpStatus.OK.value(), orderDto);
     }
 
-    public List<OrderDto.GetOrderListResponseDto> getOrderList(User user,Long storeId) throws Exception{
+    public CommonResponseDto getOrderList(User user,Long storeId) throws Exception{
         List<OrderDto.GetOrderListResponseDto> orderDtoList = new ArrayList<>();
 
         Store store;
@@ -127,11 +125,9 @@ public class BackOfficeService {
 
         }catch (Exception e){
             if(errorCode!=0){
-                System.out.println("Error "+ errorCode +": " + e.getMessage());
-            }else{
-                System.out.println("Error 404: " + e.getMessage());
+                return new CommonResponseDto(errorCode, e.getMessage());
             }
-            return null;
+            return new CommonResponseDto(HttpStatus.NOT_FOUND.value(), e.getMessage());
         }
 
         for(Order order:orderList){
@@ -150,6 +146,6 @@ public class BackOfficeService {
             orderDtoList.add(orderDto);
         }
 
-        return orderDtoList;
+        return new CommonResponseDto(HttpStatus.OK.value(), orderDtoList);
     }
 }

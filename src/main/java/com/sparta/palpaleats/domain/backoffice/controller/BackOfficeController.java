@@ -2,6 +2,7 @@ package com.sparta.palpaleats.domain.backoffice.controller;
 
 import com.sparta.palpaleats.domain.backoffice.service.BackOfficeService;
 import com.sparta.palpaleats.domain.order.dto.OrderDto;
+import com.sparta.palpaleats.global.dto.CommonResponseDto;
 import com.sparta.palpaleats.global.security.UserDetailsImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class BackOfficeController {
     private final BackOfficeService backOfficeService;
 
     @GetMapping("/stores/{storeId}/orders/{orderId}")
-    public ResponseEntity<OrderDto.GetOrderResponseDto> getOrder(
+    public ResponseEntity<CommonResponseDto> getOrder(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long storeId,
             @PathVariable Long orderId
@@ -31,7 +32,7 @@ public class BackOfficeController {
     }
 
     @GetMapping("/stores/{storeId}/orders")
-    public ResponseEntity<List<OrderDto.GetOrderListResponseDto>> getOrderList(
+    public ResponseEntity<CommonResponseDto> getOrderList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long storeId
     )throws Exception{

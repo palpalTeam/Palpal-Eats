@@ -57,7 +57,7 @@ public class CartController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<CartDto.GetCartResponseDto>> getCart(
+    public ResponseEntity<CommonResponseDto> getCart(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws Exception {
 
