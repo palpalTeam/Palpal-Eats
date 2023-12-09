@@ -29,7 +29,7 @@ public class Menu {
     @Column(nullable = false)
     Integer price;
 
-    @Column
+    @Column(length = 1000)
     String menuPictureUrl;
 
     @Column

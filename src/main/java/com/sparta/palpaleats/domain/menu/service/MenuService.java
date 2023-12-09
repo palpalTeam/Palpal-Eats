@@ -35,14 +35,14 @@ public class MenuService {
     private final S3Util s3Util;
     private final UserRepository userRepository;
 
-    public CommonResponseDto addMenu(MenuRequestDto requestDto, Long storeId, Long userId) throws UnsupportedEncodingException {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
-        );
+    public CommonResponseDto addMenu(MenuRequestDto requestDto, Long storeId, User user) throws UnsupportedEncodingException {
         if(!user.getRole().equals(SELLER)){
             throw new CustomException(ExceptionCode.FORBIDDEN_YOUR_NOT_SELLER);
         }
         Store store = findStore(storeId);
+        if(!Objects.equals(store.getUser().getId(), user.getId())){
+            throw new CustomException(ExceptionCode.BAD_REQUEST_NOT_MATCH_STORE);
+        }
         Menu menu = new Menu();
         menu.setName(requestDto.getName());
         menu.setCategory(requestDto.getCategory());
@@ -54,6 +54,7 @@ public class MenuService {
         }
         store.addMenuList(menu);
         storeRepository.save(store);
+        menuRepository.save(menu);
         return new CommonResponseDto(CommonResponseCode.MENU_CREATE);
     }
 

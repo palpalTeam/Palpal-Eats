@@ -26,7 +26,7 @@ public class MenuController {
     public ResponseEntity<CommonResponseDto> addMenu(@ModelAttribute MenuRequestDto requestDto,
                                                      @PathVariable Long storeId,
                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) throws UnsupportedEncodingException {
-        CommonResponseDto commonResponseDto = menuService.addMenu(requestDto, storeId, userDetails.getUser().getId());
+        CommonResponseDto commonResponseDto = menuService.addMenu(requestDto, storeId, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseDto);
     }
 

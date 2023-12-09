@@ -67,7 +67,7 @@ public class Store {
     @OneToMany(mappedBy = "store")
     private List<Order> orederList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "store", cascade = {CascadeType.PERSIST})
+    @OneToMany(mappedBy = "store")
     private List<Menu> menuList = new ArrayList<>();
 
     @OneToMany(mappedBy = "store")
