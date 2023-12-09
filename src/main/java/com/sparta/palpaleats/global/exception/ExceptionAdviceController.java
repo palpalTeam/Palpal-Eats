@@ -11,6 +11,6 @@ public class ExceptionAdviceController {
     public ResponseEntity<ExceptionResponse> handlerException (CustomException e) {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse(e.getExceptionCode());
-        return ResponseEntity.status(exceptionResponse.getHttpStatus()).body(exceptionResponse);
+        return ResponseEntity.status(exceptionResponse.getStatus()).body(exceptionResponse);
     }
 }
