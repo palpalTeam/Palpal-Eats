@@ -13,11 +13,13 @@ import lombok.Setter;
 @Setter
 public class UserOrderResponseDto {
 
+    private String orderStatus;
+
     private String storeName;
 
     private Long orderId;
 
-    private Integer totalPrice;
+    private Long totalPrice;
 
     private String paymentMethod;
 
@@ -30,6 +32,7 @@ public class UserOrderResponseDto {
     private List<MenuSimpleResponseDto> menuList;
 
     public UserOrderResponseDto(Order order) {
+        this.orderStatus = order.getOrderStatus();
         this.storeName = order.getStore().getName();
         this.orderId = order.getId();
         this.totalPrice = order.getTotalPrice();

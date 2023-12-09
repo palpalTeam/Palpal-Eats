@@ -50,7 +50,6 @@ public class StoreService {
             store.setStorePictureUrl(urlArr[0]);
             store.setStorePicturePath(urlArr[1]);
         }
-        store.setOpenStatus(requestDto.isOpenStatus());
         store.setUser(user);
         user.addStoreList(store);
         storeRepository.save(store);
@@ -156,19 +155,6 @@ public class StoreService {
         return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
     }
 
-    @Transactional
-    public CommonResponseDto updateStoreOpenStatus(Boolean openStatus, Long storeId, Long id) {
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
-        );
-        if(!user.getRole().equals(SELLER)){
-            throw new CustomException(ExceptionCode.FORBIDDEN_YOUR_NOT_SELLER);
-        }
-        Store store = findStore(storeId);
-        store.setOpenStatus(openStatus);
-        return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
-    }
-
     // User 든 Seller든 모두 가능
     public List<StoreResponseDto> getTotalStoreList(Long id) {
         User user = userRepository.findById(id).orElseThrow(
@@ -223,7 +209,6 @@ public class StoreService {
         storeResponseDto.setStorePictureUrl(store.getStorePictureUrl());
         storeResponseDto.setReviewRatingAvg(store.getAverageReviewRating());
         storeResponseDto.setReviewCount(store.getReviewCount());
-        storeResponseDto.setOpenStatus(store.isOpenStatus());
         return storeResponseDto;
     }
 }

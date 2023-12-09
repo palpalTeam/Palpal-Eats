@@ -10,7 +10,6 @@ import java.util.List;
 @Repository
 public interface StoreRepository extends JpaRepository<Store,Long> {
 
-
     List<Store> findAllByIsDeletedFalse();
 
     List<Store> findAllByUserIdAndIsDeletedFalse(Long id);

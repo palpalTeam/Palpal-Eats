@@ -68,6 +68,12 @@ public class UserService {
         jwtUtil.deleteRefreshToken(request);
     }
 
+    // 월요일에 튜터님께 여쭤보겠습니다.
+//    public void logout2(String username) {
+//
+//        jwtUtil.deleteRefreshToken2(username);
+//    }
+
     @Transactional
     public void updateUserAddress(Long userId, UserAddressUpdateRequestDto requestDto) {
 

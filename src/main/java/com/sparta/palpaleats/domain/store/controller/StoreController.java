@@ -85,13 +85,6 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseDto);
     }
 
-    @PatchMapping("/{storeId}/open_status")
-    public ResponseEntity<CommonResponseDto> updateStoreOpenStatus(@RequestParam("open_status") Boolean openStatus, @PathVariable Long storeId,
-                                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        CommonResponseDto commonResponseDto = storeService.updateStoreOpenStatus(openStatus, storeId, userDetails.getUser().getId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseDto);
-    }
-
     @GetMapping("/total")
     public ResponseEntity<List<StoreResponseDto>> getTotalStoreList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         List<StoreResponseDto> storeResponseDtoList = storeService.getTotalStoreList(userDetails.getUser().getId());

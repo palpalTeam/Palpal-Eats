@@ -58,9 +58,6 @@ public class Store {
     private Integer minDeliveryPrice;
 
     @Column(nullable = false)
-    private boolean openStatus;
-
-    @Column(nullable = false)
     private boolean isDeleted;
 
     @Column
