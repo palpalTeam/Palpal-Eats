@@ -103,7 +103,7 @@ public class CartService {
         return new CommonResponseDto(HttpStatus.OK.value(), "장바구니 업데이트 완료");
     }
 
-    public List<CartDto.GetCartResponseDto> getCart(User user) throws Exception{
+    public CommonResponseDto getCart(User user) throws Exception{
         List<CartDto.GetCartResponseDto> cartDtoList = new ArrayList<>();
         List<Cart> cartList = cartRepository.findAllByUserIdAndOrderIdIsNull(user.getId());
 
@@ -111,22 +111,21 @@ public class CartService {
             Menu menu;
             Store store;
             try{
-                // not found menu
+                // store not found
                 if(cart.getMenu()==null){
                     throw new Exception(ExceptionCode.NOT_FOUND_MENU.getMessage());
                 }
                 menu = menuRepository.findById(cart.getMenu().getId())
                         .orElseThrow(()->new Exception(ExceptionCode.NOT_FOUND_MENU.getMessage()));
 
-                // not found store
+                // store not found
                 if(menu.getStore()==null){
                     throw new Exception(ExceptionCode.NOT_FOUND_STORE.getMessage());
                 }
                 store = storeRepository.findById(menu.getStore().getId())
                         .orElseThrow(()->new Exception(ExceptionCode.NOT_FOUND_STORE.getMessage()));
             }catch (Exception e){
-                System.out.println(e.getMessage());
-                return null;
+                return new CommonResponseDto(HttpStatus.NOT_FOUND.value(), e.getMessage());
             }
 
             CartDto.GetCartResponseDto dto = CartDto.GetCartResponseDto.builder()
@@ -139,6 +138,6 @@ public class CartService {
             cartDtoList.add(dto);
         }
 
-        return cartDtoList;
+        return new CommonResponseDto(HttpStatus.OK.value(), cartDtoList);
     }
 }

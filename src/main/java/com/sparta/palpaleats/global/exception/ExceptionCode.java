@@ -33,6 +33,8 @@ public enum ExceptionCode {
 
     FORBIDDEN_YOUR_NOT_STORE_OWNER(HttpStatus.FORBIDDEN, "본인의 가게에만 접근할 수 있습니다."),
 
+    FORBIDDEN_YOUR_NOT_STORE_ORDER(HttpStatus.FORBIDDEN, "본인 가게의 주문내역만 접근할 수 있습니다."),
+
     FORBIDDEN_YOUR_NOT_COME_IN(HttpStatus.FORBIDDEN, "권한이 없습니다"),
 
     // NOT_FOUND 404
@@ -58,7 +60,6 @@ public enum ExceptionCode {
     CONFLICT_CART_ALREADY_ORDERED(HttpStatus.CONFLICT, "해당 장바구니는 이미 주문된 장바구니입니다."),
 
     CONFLICT_ORDER_ALREADY_CANCELED(HttpStatus.CONFLICT, "해당 주문은 이미 취소된 장바구니입니다.");
-
 
     private final HttpStatus httpStatus;
     private final String message;
