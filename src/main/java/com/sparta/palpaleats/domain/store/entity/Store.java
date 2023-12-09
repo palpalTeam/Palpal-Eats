@@ -91,6 +91,8 @@ public class Store {
 
     public Double getAverageReviewRating(){
         int sum = 0;
+        if(this.reviewList.size() == 0)
+            return (double) 0;
         for(Review review : this.reviewList){
             sum += review.getRating();
         }
