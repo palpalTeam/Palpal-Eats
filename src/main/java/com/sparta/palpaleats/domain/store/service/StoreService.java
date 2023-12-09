@@ -1,16 +1,15 @@
 package com.sparta.palpaleats.domain.store.service;
 
-import com.sparta.palpaleats.domain.menu.entity.Menu;
-import com.sparta.palpaleats.domain.menu.repository.MenuRepository;
-import com.sparta.palpaleats.domain.review.entity.Review;
 import com.sparta.palpaleats.domain.s3.S3Service;
 import com.sparta.palpaleats.domain.s3.S3Util;
-import com.sparta.palpaleats.domain.store.dto.StoreResponseDto;
-import com.sparta.palpaleats.global.common.CommonResponseCode;
-import com.sparta.palpaleats.global.common.CommonResponseDto;
 import com.sparta.palpaleats.domain.store.dto.StoreRequestDto;
+import com.sparta.palpaleats.domain.store.dto.StoreResponseDto;
 import com.sparta.palpaleats.domain.store.entity.Store;
 import com.sparta.palpaleats.domain.store.repository.StoreRepository;
+import com.sparta.palpaleats.domain.user.entity.User;
+import com.sparta.palpaleats.domain.user.repository.UserRepository;
+import com.sparta.palpaleats.global.common.CommonResponseCode;
+import com.sparta.palpaleats.global.common.CommonResponseDto;
 import com.sparta.palpaleats.global.exception.CustomException;
 import com.sparta.palpaleats.global.exception.ExceptionCode;
 import jakarta.transaction.Transactional;
@@ -21,17 +20,24 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import static com.sparta.palpaleats.domain.user.entity.UserRoleEnum.SELLER;
+
 @Service
 @RequiredArgsConstructor
 public class StoreService {
 
     private final StoreRepository storeRepository;
-    private final MenuRepository menuRepository;
     private final S3Service s3Service;
-
+    private final UserRepository userRepository;
     private final S3Util s3Util;
 
-    public CommonResponseDto addStore(StoreRequestDto requestDto) throws UnsupportedEncodingException {
+    public CommonResponseDto addStore(Long id, StoreRequestDto requestDto) throws UnsupportedEncodingException {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+        if(!user.getRole().equals(SELLER)){
+            throw new CustomException(ExceptionCode.FORBIDDEN_YOUR_NOT_SELLER);
+        }
         Store store = new Store();
         store.setName(requestDto.getName());
         store.setCategory(requestDto.getCategory());
@@ -40,22 +46,30 @@ public class StoreService {
         store.setPhone(requestDto.getPhone());
         store.setMinDeliveryPrice(requestDto.getMinDeliveryPrice());
         if (s3Util.validateFileExists(requestDto.getStorePicture())) {
-            String[] urlArr = s3Service.saveFile(requestDto.getName() + "/store", requestDto.getStorePicture());
+            String[] urlArr = s3Service.saveFile(requestDto.getName(), requestDto.getStorePicture());
             store.setStorePictureUrl(urlArr[0]);
             store.setStorePicturePath(urlArr[1]);
         }
         store.setOpenStatus(requestDto.isOpenStatus());
+        store.setUser(user);
+        user.addStoreList(store);
         storeRepository.save(store);
         return new CommonResponseDto(CommonResponseCode.STORE_CREATE);
     }
 
 
     @Transactional
-    public CommonResponseDto updatePicture(MultipartFile multipartFile, Long storeId) throws UnsupportedEncodingException {
+    public CommonResponseDto updatePicture(MultipartFile multipartFile, Long storeId, Long id) throws UnsupportedEncodingException {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+        if(!user.getRole().equals(SELLER)){
+            throw new CustomException(ExceptionCode.FORBIDDEN_YOUR_NOT_SELLER);
+        }
         Store store = findStore(storeId);
         if (s3Util.validateFileExists(multipartFile)) {
             s3Service.deleteImage(store.getStorePicturePath());
-            String[] urlArr = s3Service.saveFile(store.getName() + "/store", multipartFile);
+            String[] urlArr = s3Service.saveFile(store.getName(), multipartFile);
             store.updatePicture(urlArr);
         }
         return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
@@ -63,21 +77,39 @@ public class StoreService {
 
 
     @Transactional
-    public CommonResponseDto updateStoreName(String name, Long storeId) {
+    public CommonResponseDto updateStoreName(String name, Long storeId, Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+        if(!user.getRole().equals(SELLER)){
+            throw new CustomException(ExceptionCode.FORBIDDEN_YOUR_NOT_SELLER);
+        }
         Store store = findStore(storeId);
         store.setName(name);
         return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
     }
 
     @Transactional
-    public CommonResponseDto updateStoreCategory(String category, Long storeId) {
+    public CommonResponseDto updateStoreCategory(String category, Long storeId, Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+        if(!user.getRole().equals(SELLER)){
+            throw new CustomException(ExceptionCode.FORBIDDEN_YOUR_NOT_SELLER);
+        }
         Store store = findStore(storeId);
         store.setCategory(category);
         return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
     }
 
     @Transactional
-    public CommonResponseDto updateStoreAddress(String address, Long storeId){
+    public CommonResponseDto updateStoreAddress(String address, Long storeId, Long id){
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+        if(!user.getRole().equals(SELLER)){
+            throw new CustomException(ExceptionCode.FORBIDDEN_YOUR_NOT_SELLER);
+        }
         Store store = findStore(storeId);
         store.setAddress(address);
         return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
@@ -85,7 +117,13 @@ public class StoreService {
 
 
     @Transactional
-    public CommonResponseDto updateStorePhone(String phone, Long storeId) {
+    public CommonResponseDto updateStorePhone(String phone, Long storeId, Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+        if(!user.getRole().equals(SELLER)){
+            throw new CustomException(ExceptionCode.FORBIDDEN_YOUR_NOT_SELLER);
+        }
         Store store = findStore(storeId);
         store.setPhone(phone);
         return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
@@ -93,44 +131,82 @@ public class StoreService {
 
 
     @Transactional
-    public CommonResponseDto updateStoreContent(String content, Long storeId) {
+    public CommonResponseDto updateStoreContent(String content, Long storeId, Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+        if(!user.getRole().equals(SELLER)){
+            throw new CustomException(ExceptionCode.FORBIDDEN_YOUR_NOT_SELLER);
+        }
         Store store = findStore(storeId);
         store.setContent(content);
         return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
     }
 
     @Transactional
-    public CommonResponseDto updateStoreMinDeliveryPrice(Integer minDeliveryPrice, Long storeId) {
+    public CommonResponseDto updateStoreMinDeliveryPrice(Integer minDeliveryPrice, Long storeId, Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+        if(!user.getRole().equals(SELLER)){
+            throw new CustomException(ExceptionCode.FORBIDDEN_YOUR_NOT_SELLER);
+        }
         Store store = findStore(storeId);
         store.setMinDeliveryPrice(minDeliveryPrice);
         return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
     }
 
     @Transactional
-    public CommonResponseDto updateStoreOpenStatus(Boolean openStatus, Long storeId) {
+    public CommonResponseDto updateStoreOpenStatus(Boolean openStatus, Long storeId, Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+        if(!user.getRole().equals(SELLER)){
+            throw new CustomException(ExceptionCode.FORBIDDEN_YOUR_NOT_SELLER);
+        }
         Store store = findStore(storeId);
         store.setOpenStatus(openStatus);
         return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
     }
 
-    public List<StoreResponseDto> getStoreList() {
-        return storeRepository.findAll().stream().map(this::convertStoreResponseDto).toList();
+    // User 든 Seller든 모두 가능
+    public List<StoreResponseDto> getTotalStoreList(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+        return storeRepository.findAllByIsDeletedFalse().stream().map(this::convertStoreResponseDto).toList();
+    }
+    public List<StoreResponseDto> getStoreList(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+        if(!user.getRole().equals(SELLER)){
+            throw new CustomException(ExceptionCode.FORBIDDEN_YOUR_NOT_SELLER);
+        }
+        return storeRepository.findAllByUserIdAndIsDeletedFalse(id).stream().map(this::convertStoreResponseDto).toList();
     }
 
-
-    public StoreResponseDto getStore(Long storeId) {
+    public StoreResponseDto getStore(Long id, Long storeId) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
         Store store = findStore(storeId);
+        if(store.isDeleted()){
+            throw new CustomException(ExceptionCode.NOT_FOUND_STORE);
+        }
         return convertStoreResponseDto(store);
     }
 
-
-    public CommonResponseDto deleteStore(Long storeId) {
-        Store store = findStore(storeId);
-        for(Menu menu : store.getMenuList()){
-            s3Service.deleteImage(menu.getMenuPicturePath());
-            menuRepository.delete(menu);
+    @Transactional
+    public CommonResponseDto deleteStore(Long id, Long storeId) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+        if(!user.getRole().equals(SELLER)){
+            throw new CustomException(ExceptionCode.FORBIDDEN_YOUR_NOT_SELLER);
         }
-        storeRepository.delete(store);
+        Store store = findStore(storeId);
+        store.setDeleted(true);
         return new CommonResponseDto(CommonResponseCode.STORE_DELETE);
     }
 

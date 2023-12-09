@@ -4,16 +4,24 @@ import com.sparta.palpaleats.domain.menu.entity.Menu;
 import com.sparta.palpaleats.domain.order.entity.Order;
 import com.sparta.palpaleats.domain.review.entity.Review;
 import com.sparta.palpaleats.domain.user.entity.User;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -34,7 +42,7 @@ public class Store {
     @Column(nullable = false)
     private String address;
 
-    @Column
+    @Column(length = 1000)
     private String storePictureUrl;
 
     @Column
@@ -51,6 +59,9 @@ public class Store {
 
     @Column(nullable = false)
     private boolean openStatus;
+
+    @Column(nullable = false)
+    private boolean isDeleted;
 
     @Column
     @CreatedDate
@@ -78,13 +89,10 @@ public class Store {
         this.storePicturePath = urlArr[1];
     }
 
-    public void addMenuList(Menu menu) {
-        this.menuList.add(menu);
-        menu.setStore(this);
-    }
-
     public Double getAverageReviewRating(){
         int sum = 0;
+        if(this.reviewList.size() == 0)
+            return (double) 0;
         for(Review review : this.reviewList){
             sum += review.getRating();
         }

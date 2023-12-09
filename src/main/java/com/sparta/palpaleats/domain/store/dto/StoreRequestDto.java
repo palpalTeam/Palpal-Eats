@@ -33,4 +33,6 @@ public class StoreRequestDto {
     private String content;
 
     private boolean openStatus;
+
+    private boolean isDelete;
 }

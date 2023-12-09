@@ -1,14 +1,21 @@
 package com.sparta.palpaleats.domain.menu.entity;
 
 import com.sparta.palpaleats.domain.store.entity.Store;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -18,27 +25,30 @@ import java.time.LocalDateTime;
 public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(nullable = false)
-    String category;
+    private String category;
 
     @Column(nullable = false)
-    String name;
+    private String name;
 
     @Column(nullable = false)
-    int price;
+    private int price;
 
-    @Column(nullable = true)
-    String menuPictureUrl;
+    @Column
+    private String menuPictureUrl;
+
+    @Column(nullable = false)
+    private boolean isDeleted;
 
     @Column(nullable = false)
     @CreatedDate
-    LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
     @LastModifiedDate
-    LocalDateTime modifiedAt;
+    private LocalDateTime modifiedAt;
 
     @ManyToOne
     @JoinColumn(name = "store_id", nullable = false)

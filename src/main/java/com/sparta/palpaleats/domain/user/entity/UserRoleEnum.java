@@ -1,5 +1,8 @@
 package com.sparta.palpaleats.domain.user.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum UserRoleEnum {
 
     BUYER(Authority.BUYER),
