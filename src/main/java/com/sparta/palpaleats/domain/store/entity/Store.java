@@ -42,12 +42,11 @@ public class Store {
     @Column(nullable = false)
     private String address;
 
-    @Column
+    @Column(length = 1000)
     private String storePictureUrl;
 
     @Column
     private String storePicturePath;
-
 
     @Column(nullable = false, length = 20)
     private String phone;
@@ -88,11 +87,6 @@ public class Store {
     public void updatePicture(String[] urlArr) {
         this.storePictureUrl = urlArr[0];
         this.storePicturePath = urlArr[1];
-    }
-
-    public void addMenuList(Menu menu) {
-        this.menuList.add(menu);
-        menu.setStore(this);
     }
 
     public Double getAverageReviewRating(){

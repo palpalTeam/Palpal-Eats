@@ -4,9 +4,11 @@ import com.sparta.palpaleats.domain.store.dto.StoreResponseDto;
 import com.sparta.palpaleats.global.common.CommonResponseDto;
 import com.sparta.palpaleats.domain.store.dto.StoreRequestDto;
 import com.sparta.palpaleats.domain.store.service.StoreService;
+import com.sparta.palpaleats.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,8 +24,10 @@ public class StoreController {
     private final StoreService storeService;
 
     @PostMapping
-    public ResponseEntity<CommonResponseDto> addStore(@ModelAttribute StoreRequestDto requestDto) throws UnsupportedEncodingException {
-        CommonResponseDto commonResponseDto = storeService.addStore(requestDto);
+    public ResponseEntity<CommonResponseDto> addStore(
+            @ModelAttribute StoreRequestDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) throws UnsupportedEncodingException {
+        CommonResponseDto commonResponseDto = storeService.addStore(userDetails.getUser().getId(), requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseDto);
     }
 
@@ -85,6 +89,5 @@ public class StoreController {
         StoreResponseDto storeResponseDto = storeService.getStore(storeId);
         return ResponseEntity.ok().body(storeResponseDto);
     }
-
 
 }

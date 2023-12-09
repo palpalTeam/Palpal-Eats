@@ -36,7 +36,6 @@ public enum ExceptionCode {
 
     // FORRBIDDEN
     FORBIDDEN_YOUR_NOT_SELLER(HttpStatus.FORBIDDEN, "판매자만 접근 할 수 있습니다."),
-
     FORBIDDEN_YOUR_NOT_STORE_OWNER(HttpStatus.FORBIDDEN, "본인의 가게에만 접근할 수 있습니다."),
 
     FORBIDDEN_YOUR_NOT_COME_IN(HttpStatus.FORBIDDEN, "권한이 없습니다"),

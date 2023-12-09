@@ -6,6 +6,8 @@ import com.sparta.palpaleats.domain.store.dto.StoreRequestDto;
 import com.sparta.palpaleats.domain.store.dto.StoreResponseDto;
 import com.sparta.palpaleats.domain.store.entity.Store;
 import com.sparta.palpaleats.domain.store.repository.StoreRepository;
+import com.sparta.palpaleats.domain.user.entity.User;
+import com.sparta.palpaleats.domain.user.repository.UserRepository;
 import com.sparta.palpaleats.global.common.CommonResponseCode;
 import com.sparta.palpaleats.global.common.CommonResponseDto;
 import com.sparta.palpaleats.global.exception.CustomException;
@@ -18,16 +20,24 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import static com.sparta.palpaleats.domain.user.entity.UserRoleEnum.SELLER;
+
 @Service
 @RequiredArgsConstructor
 public class StoreService {
 
     private final StoreRepository storeRepository;
     private final S3Service s3Service;
-
+    private final UserRepository userRepository;
     private final S3Util s3Util;
 
-    public CommonResponseDto addStore(StoreRequestDto requestDto) throws UnsupportedEncodingException {
+    public CommonResponseDto addStore(Long id, StoreRequestDto requestDto) throws UnsupportedEncodingException {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ExceptionCode.NOT_FOUND_USER)
+        );
+        if(!user.getRole().equals(SELLER)){
+            throw new CustomException(ExceptionCode.FORBIDDEN_YOUR_NOT_SELLER);
+        }
         Store store = new Store();
         store.setName(requestDto.getName());
         store.setCategory(requestDto.getCategory());
@@ -36,11 +46,13 @@ public class StoreService {
         store.setPhone(requestDto.getPhone());
         store.setMinDeliveryPrice(requestDto.getMinDeliveryPrice());
         if (s3Util.validateFileExists(requestDto.getStorePicture())) {
-            String[] urlArr = s3Service.saveFile(requestDto.getName() + "/store", requestDto.getStorePicture());
+            String[] urlArr = s3Service.saveFile(requestDto.getName(), requestDto.getStorePicture());
             store.setStorePictureUrl(urlArr[0]);
             store.setStorePicturePath(urlArr[1]);
         }
         store.setOpenStatus(requestDto.isOpenStatus());
+        store.setUser(user);
+        user.addStoreList(store);
         storeRepository.save(store);
         return new CommonResponseDto(CommonResponseCode.STORE_CREATE);
     }
@@ -51,7 +63,7 @@ public class StoreService {
         Store store = findStore(storeId);
         if (s3Util.validateFileExists(multipartFile)) {
             s3Service.deleteImage(store.getStorePicturePath());
-            String[] urlArr = s3Service.saveFile(store.getName() + "/store", multipartFile);
+            String[] urlArr = s3Service.saveFile(store.getName(), multipartFile);
             store.updatePicture(urlArr);
         }
         return new CommonResponseDto(CommonResponseCode.STORE_UPDATE);
