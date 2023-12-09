@@ -1,4 +1,4 @@
-package com.sparta.palpaleats.domain.review.entity.dto;
+package com.sparta.palpaleats.domain.review.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

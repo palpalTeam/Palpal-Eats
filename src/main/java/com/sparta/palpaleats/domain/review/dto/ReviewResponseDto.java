@@ -1,4 +1,4 @@
-package com.sparta.palpaleats.domain.review.entity.dto;
+package com.sparta.palpaleats.domain.review.dto;
 
 import com.sparta.palpaleats.domain.review.entity.Review;
 import java.time.format.DateTimeFormatter;
