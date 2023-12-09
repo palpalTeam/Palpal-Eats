@@ -1,15 +1,14 @@
 package com.sparta.palpaleats.global.exception;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 public class ExceptionResponse {
 
-    private final HttpStatus httpStatus;
-    private final String message;
+    private final Integer status;
+    private final String msg;
 
     public ExceptionResponse(ExceptionCode exceptionCode) {
-        this.httpStatus = exceptionCode.getHttpStatus();
-        this.message = exceptionCode.getMessage();
+        this.status = exceptionCode.getHttpStatus().value();
+        this.msg = exceptionCode.getMessage();
     }
 }

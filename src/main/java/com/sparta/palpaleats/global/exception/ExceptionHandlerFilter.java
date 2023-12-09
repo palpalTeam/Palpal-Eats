@@ -66,7 +66,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
     @Data
     public static class ErrorResponse {
 
-        private final Integer code;
-        private final String message;
+        private final Integer status;
+        private final String msg;
     }
 }
