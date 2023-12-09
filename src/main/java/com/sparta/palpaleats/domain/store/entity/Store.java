@@ -55,7 +55,7 @@ public class Store {
     private Integer minDeliveryPrice;
 
     @Column(nullable = false)
-    private boolean openStatus;
+    private boolean isDeleted;
 
     @Column
     @CreatedDate

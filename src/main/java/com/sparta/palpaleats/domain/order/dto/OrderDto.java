@@ -19,6 +19,5 @@ public class OrderDto {
         private String deliveryAddress;
         private String paymentMethod;
         private String requestMsg;
-        private String orderStatus;
     }
 }

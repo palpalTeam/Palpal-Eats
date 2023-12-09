@@ -9,6 +9,7 @@ import com.sparta.palpaleats.domain.menu.entity.Menu;
 import com.sparta.palpaleats.domain.menu.repository.MenuRepository;
 import com.sparta.palpaleats.domain.order.dto.OrderDto;
 import com.sparta.palpaleats.domain.order.entity.Order;
+import com.sparta.palpaleats.domain.order.enums.OrderStatus;
 import com.sparta.palpaleats.domain.order.repository.OrderRepository;
 import com.sparta.palpaleats.domain.store.entity.Store;
 import com.sparta.palpaleats.domain.store.repository.StoreRepository;
@@ -16,6 +17,7 @@ import com.sparta.palpaleats.domain.user.entity.User;
 import com.sparta.palpaleats.global.dto.CommonResponseDto;
 import com.sparta.palpaleats.global.exception.ExceptionCode;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -72,6 +74,7 @@ public class OrderService {
                 .paymentMethod(requestDto.getPaymentMethod())
                 .requests(requestDto.getRequestMsg())
                 .totalPrice(totalPrice)
+                .orderStatus(OrderStatus.ORDER_START.getStatus())
                 .user(user)
                 .store(cartList.get(0).getMenu().getStore())
                 .cartList(cartList)
@@ -89,15 +92,24 @@ public class OrderService {
 
     public CommonResponseDto deleteOrder(User user, Long orderId) throws Exception{
 
+        Order order;
         try{
-            Order order = orderRepository.findById(orderId)
+            order = orderRepository.findById(orderId)
                     .orElseThrow(()->new Exception(ExceptionCode.NOT_FOUND_ORDER.getMessage()));
+            if(order.isDeleted()){
+                throw new Exception(ExceptionCode.CONFLICT_ORDER_ALREADY_CANCELED.getMessage());
+            }
+            if(!Objects.equals(order.getUser().getId(), user.getId())){
+                throw new Exception(ExceptionCode.FORBIDDEN_YOUR_NOT_COME_IN.getMessage());
+            }
         }catch (Exception e){
             return new CommonResponseDto(HttpStatus.NOT_FOUND.value(), e.getMessage());
         }
 
-        orderRepository.deleteById(orderId);
+        order.setDeleted(true);
+        order.setOrderStatus(OrderStatus.ORDER_CANCELED.getStatus());
+        orderRepository.save(order);
 
-        return new CommonResponseDto(HttpStatus.OK.value(), "주문 삭제 완료");
+        return new CommonResponseDto(HttpStatus.OK.value(), "주문 취소 완료");
     }
 }

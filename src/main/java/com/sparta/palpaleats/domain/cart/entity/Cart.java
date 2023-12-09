@@ -1,7 +1,6 @@
 package com.sparta.palpaleats.domain.cart.entity;
 
 import com.sparta.palpaleats.domain.menu.entity.Menu;
-import com.sparta.palpaleats.domain.menuoption.entity.MenuDetail;
 import com.sparta.palpaleats.domain.order.entity.Order;
 import com.sparta.palpaleats.domain.store.entity.Store;
 import com.sparta.palpaleats.domain.user.entity.User;
@@ -15,8 +14,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -26,34 +27,36 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "carts")
 public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(nullable = false)
-    Integer quantity;
+    private Integer quantity;
 
     @CreatedDate
     @Column(updatable = false)
-    LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @Column
     @LastModifiedDate
-    LocalDateTime modifiedAt;
+    private LocalDateTime modifiedAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    User user;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "menu_id", nullable = false)
-    Menu menu;
+    private Menu menu;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = true)
-    Order order;
+    @JoinColumn(name = "order_id")
+    private Order order;
 }

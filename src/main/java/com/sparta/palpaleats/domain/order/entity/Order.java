@@ -19,8 +19,10 @@ import java.sql.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -30,6 +32,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "orders")
 public class Order {
@@ -47,6 +51,9 @@ public class Order {
     @Column
     private String requests;
 
+    @Column
+    private String orderStatus;
+
     @Column(updatable = false)
     @CreatedDate
     private LocalDateTime createdAt;
@@ -57,6 +64,9 @@ public class Order {
 
     @Column(nullable = false)
     private String deliveryAddress;
+
+    @Column(nullable = false)
+    private boolean isDeleted;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -72,4 +82,8 @@ public class Order {
     @OneToOne(mappedBy = "order")
     private Review review;
 
+    public String getFirstItemAndOthersCount() {
+
+        return cartList.get(0).getMenu().getName() + " 외 " + (cartList.size()-1) + "건";
+    }
 }

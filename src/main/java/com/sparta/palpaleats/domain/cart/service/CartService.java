@@ -1,13 +1,10 @@
 package com.sparta.palpaleats.domain.cart.service;
 
 import com.sparta.palpaleats.domain.cart.dto.CartDto;
-import com.sparta.palpaleats.domain.cart.dto.CartDto.GetCartResponseDto;
 import com.sparta.palpaleats.domain.cart.entity.Cart;
 import com.sparta.palpaleats.domain.cart.repository.CartRepository;
 import com.sparta.palpaleats.domain.menu.entity.Menu;
 import com.sparta.palpaleats.domain.menu.repository.MenuRepository;
-import com.sparta.palpaleats.domain.menuoption.entity.MenuDetail;
-import com.sparta.palpaleats.domain.menuoption.repository.MenuDetailRepository;
 import com.sparta.palpaleats.domain.store.entity.Store;
 import com.sparta.palpaleats.domain.store.repository.StoreRepository;
 import com.sparta.palpaleats.domain.user.entity.User;
@@ -30,12 +27,12 @@ public class CartService {
     public CommonResponseDto createCart(User user,
             CartDto.CreateCartRequestDto requestDto) throws Exception{
 
-        List<Cart> cartList = cartRepository.findAllByUserId(user.getId());
+        List<Cart> cartList = cartRepository.findAllByUserIdAndOrderIdIsNull(user.getId());
         Menu menu;
         Store originStore;
         Store newStore;
         if(!cartList.isEmpty()){
-            originStore=cartList.get(0).getOrder().getStore();
+            originStore=cartList.get(0).getMenu().getStore();
         }
 
         try{
@@ -76,6 +73,9 @@ public class CartService {
         try{
             cart = cartRepository.findById(cartId)
                     .orElseThrow(()->new Exception(ExceptionCode.NOT_FOUND_CART.getMessage()));
+            if(cart.getOrder()!=null){
+                throw new Exception(ExceptionCode.CONFLICT_CART_ALREADY_ORDERED.getMessage());
+            }
         }catch (Exception e){
             return new CommonResponseDto(HttpStatus.NOT_FOUND.value(),e.getMessage());
         }
@@ -105,7 +105,7 @@ public class CartService {
 
     public List<CartDto.GetCartResponseDto> getCart(User user) throws Exception{
         List<CartDto.GetCartResponseDto> cartDtoList = new ArrayList<>();
-        List<Cart> cartList = cartRepository.findAllByUserId(user.getId());
+        List<Cart> cartList = cartRepository.findAllByUserIdAndOrderIdIsNull(user.getId());
 
         for(Cart cart:cartList){
             Menu menu;
