@@ -11,7 +11,7 @@ public class OrderResponseDto {
 
     private String storeName;
     private Long orderId;
-    private Integer totalPrice;
+    private Long totalPrice;
     private String createdAt;
     private String cart;
 

@@ -17,7 +17,7 @@ public class UserOrderResponseDto {
 
     private Long orderId;
 
-    private Integer totalPrice;
+    private Long totalPrice;
 
     private String paymentMethod;
 
