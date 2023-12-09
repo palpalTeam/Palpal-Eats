@@ -9,6 +9,8 @@ import com.sparta.palpaleats.domain.user.dto.UserResponseDto;
 import com.sparta.palpaleats.domain.user.dto.UserSaveRequestDto;
 import com.sparta.palpaleats.domain.user.service.UserService;
 import com.sparta.palpaleats.global.dto.CommonResponseDto;
+import com.sparta.palpaleats.global.exception.CustomException;
+import com.sparta.palpaleats.global.exception.ExceptionCode;
 import com.sparta.palpaleats.global.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -35,7 +37,7 @@ public class UserController {
             @Valid @RequestBody UserSaveRequestDto requestDto) {
 
         userService.signup(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED.value())
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new CommonResponseDto(HttpStatus.CREATED.value(), "가입이 완료되었습니다."));
     }
 
@@ -43,9 +45,20 @@ public class UserController {
     public ResponseEntity<CommonResponseDto> logout(HttpServletRequest request) {
 
         userService.logout(request);
-        return ResponseEntity.status(HttpStatus.OK.value())
+
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(new CommonResponseDto(HttpStatus.OK.value(), "로그아웃이 완료되었습니다"));
     }
+
+    // 월요일에 튜터님께 여쭤보겠습니다.
+//    @PatchMapping("/users/logout2")
+//    public ResponseEntity<CommonResponseDto> logout2(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+//
+//        userService.logout2(userDetails.getUsername());
+//
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(new CommonResponseDto(HttpStatus.OK.value(), "로그아웃이 완료되었습니다"));
+//    }
 
     @GetMapping("/myinfo")
     public ResponseEntity<UserResponseDto> getMyInfo(
@@ -53,7 +66,7 @@ public class UserController {
 
         UserResponseDto responseDto = userService.getMyInfo(userDetails.getUser().getId());
 
-        return ResponseEntity.status(HttpStatus.OK.value()).body(responseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     @PatchMapping("/myinfo/address")
@@ -62,7 +75,7 @@ public class UserController {
 
         userService.updateUserAddress(userDetails.getUser().getId(), requestDto);
 
-        return ResponseEntity.status(HttpStatus.OK.value())
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(new CommonResponseDto(HttpStatus.OK.value(), "주소가 수정되었습니다"));
     }
 
@@ -73,7 +86,7 @@ public class UserController {
 
         userService.updateUserNickname(userDetails.getUser().getId(), requestDto);
 
-        return ResponseEntity.status(HttpStatus.OK.value())
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(new CommonResponseDto(HttpStatus.OK.value(), "닉네임이 수정되었습니다"));
     }
 
@@ -84,7 +97,7 @@ public class UserController {
 
         userService.updateUserPassword(userDetails.getUser().getId(), requestDto);
 
-        return ResponseEntity.status(HttpStatus.OK.value())
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(new CommonResponseDto(HttpStatus.OK.value(), "비밀번호가 수정되었습니다"));
     }
 
@@ -92,15 +105,18 @@ public class UserController {
     public ResponseEntity<UserOrderResponseDto> getUserOrder(
             @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long orderId) {
 
-        UserOrderResponseDto responseDto = userService.getUserOrder(userDetails.getUser().getId(), orderId);
-        return ResponseEntity.status(HttpStatus.OK.value()).body(responseDto);
+        UserOrderResponseDto responseDto = userService.getUserOrder(userDetails.getUser().getId(),
+                orderId);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     @GetMapping("/myinfo/orders")
-    public ResponseEntity<List<OrderResponseDto>> getUserOrders(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<List<OrderResponseDto>> getUserOrders(
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        List<OrderResponseDto> orderResponseDto = userService.getUserOrders(userDetails.getUser().getId());
+        List<OrderResponseDto> orderResponseDto = userService.getUserOrders(
+                userDetails.getUser().getId());
 
-        return ResponseEntity.status(HttpStatus.OK.value()).body(orderResponseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(orderResponseDto);
     }
 }
