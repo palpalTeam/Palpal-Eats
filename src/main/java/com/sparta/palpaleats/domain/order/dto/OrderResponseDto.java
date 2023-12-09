@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 public class OrderResponseDto {
 
+    private String orderStatus;
     private String storeName;
     private Long orderId;
     private Long totalPrice;
@@ -16,6 +17,7 @@ public class OrderResponseDto {
     private String cart;
 
     public OrderResponseDto(Order order) {
+        this.orderStatus = order.getOrderStatus();
         this.storeName = order.getStore().getName();
         this.orderId = order.getId();
         this.totalPrice = order.getTotalPrice();

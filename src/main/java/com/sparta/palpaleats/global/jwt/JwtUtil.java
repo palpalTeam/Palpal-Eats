@@ -1,6 +1,8 @@
 package com.sparta.palpaleats.global.jwt;
 
 import com.sparta.palpaleats.domain.user.entity.UserRoleEnum;
+import com.sparta.palpaleats.global.exception.CustomException;
+import com.sparta.palpaleats.global.exception.ExceptionCode;
 import com.sparta.palpaleats.global.jwt.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -88,6 +90,22 @@ public class JwtUtil {
         return false;
     }
 
+    public void validateTokenAndThrow(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+        } catch (SecurityException | MalformedJwtException | SignatureException e) {
+            throw e;
+        } catch (ExpiredJwtException e) {
+            throw e;
+        } catch (UnsupportedJwtException e) {
+            throw e;
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (NullPointerException e) {
+            throw e;
+        }
+    }
+
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
@@ -131,11 +149,24 @@ public class JwtUtil {
     }
 
     public void deleteRefreshToken(HttpServletRequest request) {
+        String accessToken = resolveAccessToken(request);
 
-        String refreshToken = resolveRefreshToken(request);
-        Claims info = getUserInfoFromToken(refreshToken);
-        String username = info.getSubject();
+        if(validateToken(accessToken)) {
+            Claims info = getUserInfoFromToken(accessToken);
+            String username = info.getSubject();
 
-        refreshTokenRepository.deleteRefreshToken(username);
+            refreshTokenRepository.deleteRefreshToken(username);
+        } else {
+            try {
+                validateTokenAndThrow(accessToken);
+            } catch (Exception e) {
+                throw new CustomException(ExceptionCode.UNAUTHORIZED_TOKEN_INVALID);
+            }
+        }
     }
+
+    // 월요일에 튜터님께 여쭤보겠습니다.
+//    public void deleteRefreshToken2(String username) {
+//        refreshTokenRepository.deleteRefreshToken(username);
+//    }
 }
