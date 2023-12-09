@@ -27,7 +27,7 @@ public class UserOrderResponseDto {
 
     private String createdAt;
 
-    private List<MenuSimpleResponseDto> menuSimpleResponseDtoList;
+    private List<MenuSimpleResponseDto> menuList;
 
     public UserOrderResponseDto(Order order) {
         this.storeName = order.getStore().getName();
@@ -37,7 +37,7 @@ public class UserOrderResponseDto {
         this.request = order.getRequests();
         this.deliverAddress = order.getDeliveryAddress();
         this.createdAt = order.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        this.menuSimpleResponseDtoList = order.getCartList().stream().map(Cart::getMenu).map(menu -> {
+        this.menuList = order.getCartList().stream().map(Cart::getMenu).map(menu -> {
             MenuSimpleResponseDto dto = new MenuSimpleResponseDto();
             dto.setMenuName(menu.getName());
             dto.setPrice(menu.getPrice());

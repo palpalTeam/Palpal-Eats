@@ -16,7 +16,9 @@ public enum ExceptionCode {
     // CONFLICT
     CONFLICT_STORE_NAME(HttpStatus.CONFLICT, "해당 가게 이름은 이미 존재합니다."),
 
-    CONFLICT_USER_EMAIL_NICKNAME_IN_USE(HttpStatus.CONFLICT, "사용자 이메일 또는 닉네임이 이미 사용 중 합니다"),
+    CONFLICT_USER_EMAIL_NICKNAME_IN_USE(HttpStatus.CONFLICT, "사용자 이메일 또는 닉네임이 이미 사용 중 입니다"),
+
+    CONFLICT_USER_NICKNAME(HttpStatus.CONFLICT, "사용자 닉네임이 이미 사용 중입니다"),
 
     CONFLICT_CART_ALREADY_ORDERED(HttpStatus.CONFLICT, "해당 장바구니는 이미 주문된 장바구니입니다."),
 
