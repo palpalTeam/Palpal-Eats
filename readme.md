@@ -140,18 +140,33 @@
   - 근본적인 해결
     - 근본적으로 해결하려면 fast-forward only 옵션을 ```git config --unset pull.ff```
 - **참고 자료**
-  - [Not possible to fast-forward, aborting. 에러 해결](https://velog.io/@eunddodi/Not-possible-to-fast-forward-aborting.-%EC%97%90%EB%9F%AC-%ED%95%B4%EA%B2%B0)
+  - [Not possible to fast-forward, aborting.](https://velog.io/@eunddodi/Not-possible-to-fast-forward-aborting.-%EC%97%90%EB%9F%AC-%ED%95%B4%EA%B2%B0)
 
 ### 2. getWriter() has already been called for this response 에러
 - **문제 정의**
   - 유저 회원가입 테스트 중 getWriter() has already been called for this response 출력
   - ExceptionHandeler에서 문제가 났다고 하길래, Exception을 안 내면 되겠다 생각
+    ![image](https://github.com/palpalTeam/Palpal-Eats/assets/82515938/5311c4e3-3355-46ec-893d-fc550b6a7155)
+
   - Exception을 안 내도 getWriter 오류 발생
+    ![image](https://github.com/palpalTeam/Palpal-Eats/assets/82515938/073052ca-d450-463f-a2db-1c5ffbbf4c5d)
 
 - **원인 추론**
-  - response를 반환해야하는데, 이미 getWriter()가 쓰였기 때문에 안 된다는 의미 같은데
-  - JwtAuthorizationFilter에서 오류가 난다고 한다
+  - response를 반환해야하는데, 이미 getWriter()가 쓰였기 때문에 안 된다는 의미 같은데, JwtAuthorizationFilter에서 오류가 난다고 한다.
+    ![image](https://github.com/palpalTeam/Palpal-Eats/assets/82515938/22b4055f-9ed8-4137-9ef8-2dc82f6f43ce)
+
   - 이 부분에서 난다.
+    ![image](https://github.com/palpalTeam/Palpal-Eats/assets/82515938/c3ee1429-eb71-4dc2-a9f6-cba12d5e328b)
+
+  - 작성한 코드를 보면 토큰이 유효하지 않을 시 getWriter()를 쓰는데, 생각해보니 왜 회원가입을 테스트하는데 Authorization에 들어가지?
+    
+- **해결 방안**
+  - AuthorizationFilter에서 Response만들고 writer를 하는게 일반적인 방법이 아니다.
+  - 그래서 필터에서 예외가 발생하면 Filter 앞단에 Exception Handler를 추가해서 문제를 해결했다.
+
+- **참고 자료**
+  - [Spring Security - 기본 API 및 Filter 이해](https://gong-story.tistory.com/34)
+  - [Spring Security - Filter 에서 발생한 예외 핸들링하기](https://jhkimmm.tistory.com/29)
 
 ### 3. API path에서 Id 값을 못 찾는 에러
 - **문제 정의**
@@ -166,15 +181,15 @@
 
 - **해결 방안**
   - url에 설정해둔 값을 PathVariable로 받아올시 밑에 예제처럼 String id와 같이 이름이 같다면 (”id”) 부분이 생략이 가능하다
-  ```java
-  @RestController
-  public class MemberContoller{
-  	@GetMapping("/test/url/{id}")
-  	public String findById(@PathVariable("id") String id) {
-  		retrun "Id: " + id;
-  	}
-  }
-  ```
+    ```java
+    @RestController
+    public class MemberContoller{
+    	@GetMapping("/test/url/{id}")
+    	public String findById(@PathVariable("id") String id) {
+    		retrun "Id: " + id;
+    	}
+    }
+    ```
   - 하지만 URI 에 있는 특정값을 지정하여 변수로 지정하고 싶다면 위 코드와 같이 @PathVariable뒤에 ( ) 를 넣어 url의 변수명을 넣은후 뒤에 오는 변수명의 타입, 값을 넣어야한다.
   - @PathVariable 뒤에 (”orderId”) 를 넣음으로서 받아야할 값을 받도록 넣음으로서 해결했다.
     ![image](https://github.com/palpalTeam/Palpal-Eats/assets/82515938/72fb32a0-c258-4d8c-9f24-e909a4cb2fe8)
