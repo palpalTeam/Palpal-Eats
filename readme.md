@@ -6,9 +6,11 @@
 [![Video Label](http://img.youtube.com/vi/rNcWXk7oPFM/0.jpg)](https://youtu.be/rNcWXk7oPFM)
 
 ## 🐟 Links
+- [Github](https://github.com/palpalTeam/Palpal-Eats)
 - [Notion](https://www.notion.so/8abced91c2a8471daa12612c1754d7b2?pvs=4)
 - [Figma](https://www.figma.com/file/zxAYZYaTPT70jWjvP8MZnV?embed_host=notion&kind=file&mode=design&node-id=0-1&t=kovpGCl0YpQyM5Nu-0&type=design&viewer=1)
 - [ERD Cloud](https://www.erdcloud.com/d/XZALdEPNeiLpMnZAk)
+- [Postman](https://universal-comet-344748.postman.co/workspace/Team-Workspace~c43626f4-d8a8-4e3f-8689-03585237ebc7/collection/31674523-d80de786-5160-4f5d-9677-b58e70e79f1b?action=share&creator=31348504)
 
 ## 🐟 Personal Role
 | Name | Role                                |
