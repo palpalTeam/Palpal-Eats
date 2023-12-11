@@ -10,8 +10,18 @@
 
 ## 🐟 API 명세서
 ### 1. User API
-|name|method|url|etc|
+| Name | Method | URL | Auth |
 |---|---|---|---|
-|내용 1|내용 2|내용 3|내용 4|
-|내용 5|내용 6|내용 7|내용 8|
-|내용 9|내용 10|내용 11|내용 12|
+| 회원가입 | POST | /users/signup | none |
+| 로그인 | POST | /users/login | none |
+| 로그아웃 | PATCH | /users/logout | user |
+
+### 2. MyInfo API
+| Name | Method | URL | Auth |
+|---|---|---|---|
+| 주소 변경 | PATCH | /myinfo/address | none |
+| 닉네임 변경 | PATCH | /myinfo/nickname | none |
+| 비밀번호 변경 | PATCH | /myinfo/password | user |
+| 내 정보 조회 | GET | /myinfo | none |
+| 내 주문 내역 단 건 조회 | GET | /myinfo/orders/{orderId} | user |
+| 내 주문 내역 전체 조회 | GET | /myinfo/orders | user |
