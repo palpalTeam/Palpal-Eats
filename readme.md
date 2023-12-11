@@ -8,10 +8,10 @@
 ## 🐟 Personal Role
 | Name | Role                                |
 |------|-------------------------------------|
-| 조원호  | Auth API, User API, MyInfo API      |
-| 이지선  | Cart API, Order API, BackOffice API |
-| 김종규  | S3 API, Store API, Menu API         |
-| 김대영  | Review API                          |
+| [조원호](https://github.com/wonowonow) | Auth API, User API, MyInfo API      |
+| [이지선](https://github.com/jiisuniui) | Cart API, Order API, BackOffice API |
+| [김종규](https://github.com/Kim-Jong-Gyu) | S3 API, Store API, Menu API         |
+| [김대영](https://github.com/kdy9960) | Review API                          |
 
 ## 🐟 Commit Convention
 | Tag Name | Description |
