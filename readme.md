@@ -23,13 +23,13 @@
 | 닉네임 변경 | PATCH | /myinfo/nickname | none |
 | 비밀번호 변경 | PATCH | /myinfo/password | user |
 | 내 정보 조회 | GET | /myinfo | none |
-| 내 주문 내역 단 건 조회 | GET | /myinfo/orders/{orderId} | user |
+| 내 주문 내역 단일 조회 | GET | /myinfo/orders/{orderId} | user |
 | 내 주문 내역 전체 조회 | GET | /myinfo/orders | user |
 
 ### 3. BackOffice API
 | Name | Method | URL | Auth |
 |---|---|---|---|
-| 가게의 주문 내역 단 건 조회 | GET | /backoffice/stores/{storeId}/orders/{orderId} | seller |
+| 가게의 주문 내역 단일 조회 | GET | /backoffice/stores/{storeId}/orders/{orderId} | seller |
 | 가게의 주문 내역 전체 조회 | GET | /backoffice/stores/{storeId}/orders | seller |
 
 ### 4. Order API
@@ -50,15 +50,26 @@
 | Name | Method | URL | Auth |
 |---|---|---|---|
 | 가게 생성 | POST | /stores | seller |
+| 가게 수정 - 이름 | PATCH | /stores/{storeId}/name | seller |
+| 가게 수정 - 카테고리 | PATCH | /stores/{storeId}/category | seller |
+| 가게 수정 - 주소 | PATCH | /stores/{storeId}/address | seller |
+| 가게 수정 - 전화번호 | PATCH | /stores/{storeId}/phone | seller |
+| 가게 수정 - 소개글 | PATCH | /stores/{storeId}/content | seller |
+| 가게 수정 - 최소주문금액 | PATCH | /stores/{storeId}/min_delivery_price | seller |
+| 가게 수정 - 사진 | PATCH | /stores/{storeId}/picture | seller |
+| 가게 삭제 | PATCH | /stores/{storesId}/delete | seller |
 | 유저의 가게 전체 조회 | GET | /stores/user | seller |
 | 가게 전체 조회 | GET | /stores/total | seller |
-| 가게 단 건 조회 | GET | /stores/{storeId} | seller |
-| 가게 삭제 | PATCH | /stores/{storesId}/delete | seller |
-| 가게 정보 변경 - 이름 | PATCH | /stores/{storeId}/name | seller |
-| 가게 정보 변경 - 카테고리 | PATCH | /stores/{storeId}/category | seller |
-| 가게 정보 변경 - 주소 | PATCH | /stores/{storeId}/address | seller |
-| 가게 정보 변경 - 전화번호 | PATCH | /stores/{storeId}/phone | seller |
-| 가게 정보 변경 - 소개글 | PATCH | /stores/{storeId}/content | seller |
-| 가게 정보 변경 - 최소주문금액 | PATCH | /stores/{storeId}/min_delivery_price | seller |
-| 가게 정보 변경 - 사진 | PATCH | /stores/{storeId}/picture | seller |
+| 가게 단일 조회 | GET | /stores/{storeId} | seller |
 
+### 7. Menu API
+| Name | Method | URL | Auth |
+|---|---|---|---|
+| 메뉴 생성 | POST | /stores/{storeId}/menu | seller |
+| 메뉴 수정 - 이름 | PATCH | /stores/{storeId}/menu/name | seller |
+| 메뉴 수정 - 가격 | PATCH | /stores/{storeId}/menu/price | seller |
+| 메뉴 수정 - 카테고리 | PATCH | /stores/{storeId}/menu/category | seller |
+| 메뉴 수정 - 사진 | PATCH | /stores/{storeId}/menu/picture | seller |
+| 메뉴 삭제 | PATCH | /stores/{storeId}/menu/{menuId}/delete | seller |
+| 해당 가게의 메뉴 전체 조회 | GET | /stores/{storeId}/menu | seller |
+| 해당 가게의 메뉴 단일 조회 | GET | /stores/{storeId}/menu/{menuId} seller |
