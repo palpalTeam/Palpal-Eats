@@ -3,13 +3,14 @@
 <img width="300px" alt="팔팔잇츠 아이콘" src="https://github.com/palpalTeam/Palpal-Eats/assets/82515938/16cd8b2f-0a8c-4e6b-9992-0513ed3c8fe0">
 
 ## 🐟 Demo Video
+[![Video Label](http://img.youtube.com/vi/rNcWXk7oPFM/0.jpg)](https://youtu.be/rNcWXk7oPFM)
 
 ## 🐟 Personal Role
 | Name | Role                                |
 |------|-------------------------------------|
 | 조원호  | Auth API, User API, MyInfo API      |
 | 이지선  | Cart API, Order API, BackOffice API |
-| 김종규  | Store API, Menu API                 |
+| 김종규  | S3 API, Store API, Menu API         |
 | 김대영  | Review API                          |
 
 ## 🐟 Commit Convention
@@ -132,26 +133,51 @@
 
 ## 🐟 Trouble Shooting
 ### 1. Not possible to fast-forward, aborting 에러
-- 원인 추론
+- **원인 추론**
   - ```git config pull.ff only``` 를 통해 pull의 기본 옵션을 ff-only로 설정해놓은 경우 발생할 수 있는 에러
   - pull 하려는 원격저장소의 브랜치와 로컬저장소의 브랜치가 Fast-Forward 관계가 아닐때 발생 -> 즉,원격저장소의 새로운 commit이 존재하는데 git pull을 하지 않은 상태에서 로컬저장소에 새로운 commit을 했다면 해당 에러가 발생
-- 해결 방안
+- **해결 방안**
   - 근본적인 해결
     - 근본적으로 해결하려면 fast-forward only 옵션을 ```git config --unset pull.ff```
-- 관련 자료 
-  - https://velog.io/@eunddodi/Not-possible-to-fast-forward-aborting.-%EC%97%90%EB%9F%AC-%ED%95%B4%EA%B2%B0
+- **참고 자료**
+  - [Not possible to fast-forward, aborting. 에러 해결](https://velog.io/@eunddodi/Not-possible-to-fast-forward-aborting.-%EC%97%90%EB%9F%AC-%ED%95%B4%EA%B2%B0)
 
 ### 2. getWriter() has already been called for this response 에러
-- 문제 정의
-- 유저 회원가입 테스트 중 getWriter() has already been called for this response 출력
-- ExceptionHandeler에서 문제가 났다고 하길래, Exception을 안 내면 되겠다 생각
-- Exception을 안 내도 getWriter 오류 발생
+- **문제 정의**
+  - 유저 회원가입 테스트 중 getWriter() has already been called for this response 출력
+  - ExceptionHandeler에서 문제가 났다고 하길래, Exception을 안 내면 되겠다 생각
+  - Exception을 안 내도 getWriter 오류 발생
 
-- 원인 추론
+- **원인 추론**
   - response를 반환해야하는데, 이미 getWriter()가 쓰였기 때문에 안 된다는 의미 같은데
   - JwtAuthorizationFilter에서 오류가 난다고 한다
   - 이 부분에서 난다.
 
-### 3. API url에서 Id 값을 못 찾는 에러
+### 3. API path에서 Id 값을 못 찾는 에러
+- **문제 정의**
+  - Postman으로 리뷰 생성 테스트 중에 작성자를 받아오는 orderId값을 받아오지 못하는 상황이 발생
+  ![image](https://github.com/palpalTeam/Palpal-Eats/assets/82515938/28b07f0d-073d-446c-91c9-93463320acf0)
+  
+  - 코드 상으로는 @PathVariable을 이용하여 Long orderId 값을 받아 오도록 작성했으나 원인이 무엇때문인지 Long값을 받아오지 못함
+  ![image](https://github.com/palpalTeam/Palpal-Eats/assets/82515938/710c366d-219c-4a57-a54d-e212e756cea1)
 
+- **원인 추론**
+  - 오류 부분상 User의 정보는 받아오는것 같지만 리뷰 작성 구조는 User가 장바구니에 메뉴를 담아 주문을 했을경우 작성함으로 주문쪽인 orderId의 값을 받아 오지못하는것으로 추정됨
 
+- **해결 방안**
+  - url에 설정해둔 값을 PathVariable로 받아올시 밑에 예제처럼 String id와 같이 이름이 같다면 (”id”) 부분이 생략이 가능하다
+  ```java
+  @RestController
+  public class MemberContoller{
+  	@GetMapping("/test/url/{id}")
+  	public String findById(@PathVariable("id") String id) {
+  		retrun "Id: " + id;
+  	}
+  }
+  ```
+  - 하지만 URI 에 있는 특정값을 지정하여 변수로 지정하고 싶다면 위 코드와 같이 @PathVariable뒤에 ( ) 를 넣어 url의 변수명을 넣은후 뒤에 오는 변수명의 타입, 값을 넣어야한다.
+  - @PathVariable 뒤에 (”orderId”) 를 넣음으로서 받아야할 값을 받도록 넣음으로서 해결했다.
+    ![image](https://github.com/palpalTeam/Palpal-Eats/assets/82515938/72fb32a0-c258-4d8c-9f24-e909a4cb2fe8)
+
+- **참고 자료**
+  - [Spring - 사용자가 전달한 값 사용하기](https://galid1.tistory.com/505)
