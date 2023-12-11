@@ -4,16 +4,8 @@ import com.sparta.palpaleats.domain.menu.entity.Menu;
 import com.sparta.palpaleats.domain.order.entity.Order;
 import com.sparta.palpaleats.domain.review.entity.Review;
 import com.sparta.palpaleats.domain.user.entity.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +34,11 @@ public class Store {
     @Column(nullable = false)
     private String address;
 
-    @Column
+    @Column(length = 1000)
     private String storePictureUrl;
+
+    @Column
+    private String storePicturePath;
 
     @Column(nullable = false, length = 20)
     private String phone;
@@ -55,7 +50,7 @@ public class Store {
     private Integer minDeliveryPrice;
 
     @Column(nullable = false)
-    private boolean openStatus;
+    private boolean isDeleted;
 
     @Column
     @CreatedDate
@@ -77,4 +72,31 @@ public class Store {
 
     @OneToMany(mappedBy = "store")
     private List<Review> reviewList = new ArrayList<>();
+
+    public void updatePicture(String[] urlArr) {
+        this.storePictureUrl = urlArr[0];
+        this.storePicturePath = urlArr[1];
+    }
+
+    public Double getAverageReviewRating(){
+        int sum = 0;
+        if(this.reviewList.size() == 0)
+            return (double) 0;
+        for(Review review : this.reviewList){
+            sum += review.getRating();
+        }
+        return (double) (sum / reviewList.size());
+    }
+
+    public String getReviewCount(){
+        if(this.reviewList.size() > 100){
+            return "100+";
+        }
+        return String.valueOf(this.reviewList.size());
+    }
+
+    public void addMenuList(Menu menu) {
+        this.menuList.add(menu);
+        menu.setStore(this);
+    }
 }

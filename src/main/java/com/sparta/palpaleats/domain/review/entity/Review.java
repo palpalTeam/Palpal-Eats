@@ -1,7 +1,7 @@
 package com.sparta.palpaleats.domain.review.entity;
 
-import com.sparta.palpaleats.domain.cart.entity.Cart;
 import com.sparta.palpaleats.domain.order.entity.Order;
+import com.sparta.palpaleats.domain.review.dto.ReviewRequestDto;
 import com.sparta.palpaleats.domain.store.entity.Store;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,16 +15,18 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Getter
 @Setter
+@Getter
 @Table(name = "reviews")
 @EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor
 public class Review {
 
     @Id
@@ -35,7 +37,7 @@ public class Review {
     private String content;
 
     @Column(nullable = false)
-    public Integer rating;
+    private Integer rating;
 
     @Column(updatable = false)
     @CreatedDate
@@ -53,4 +55,10 @@ public class Review {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
+    public Review(ReviewRequestDto requestDto, Order order, Store store) {
+        this.content = requestDto.getContent();
+        this.rating = requestDto.getRating();
+        this.order = order;
+        this.store = store;
+    }
 }

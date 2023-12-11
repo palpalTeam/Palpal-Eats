@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Currency;
 import org.springframework.data.annotation.CreatedDate;
@@ -28,6 +29,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Setter
 @Table(name = "users")
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class User {
 
@@ -44,7 +46,7 @@ public class User {
     @Column(nullable = false, length = 20, unique = true)
     private String nickname;
 
-    @Column(length = 20)
+    @Column(length = 50)
     private String currentAddress;
 
     @Column(nullable = false, length = 100)
@@ -70,4 +72,18 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Cart> cartList = new ArrayList<>();
+
+    public User(String email, String password, String currentAddress, String nickname, UserRoleEnum role) {
+
+        this.email = email;
+        this.password = password;
+        this.currentAddress = currentAddress;
+        this.nickname = nickname;
+        this.role = role;
+    }
+
+    public void addStoreList(Store store) {
+        this.storeList.add(store);
+        store.setUser(this);
+    }
 }

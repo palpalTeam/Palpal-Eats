@@ -1,25 +1,14 @@
 package com.sparta.palpaleats.domain.menu.entity;
 
-import com.sparta.palpaleats.domain.menuoption.entity.MenuDetail;
 import com.sparta.palpaleats.domain.store.entity.Store;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -38,10 +27,16 @@ public class Menu {
     String name;
 
     @Column(nullable = false)
-    int price;
+    Integer price;
 
-    @Column(nullable = true)
+    @Column(length = 1000)
     String menuPictureUrl;
+
+    @Column
+    String menuPicturePath;
+
+    @Column(nullable = false)
+    private boolean isDeleted;
 
     @Column(nullable = false)
     @CreatedDate
@@ -55,6 +50,8 @@ public class Menu {
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
-    @OneToMany(mappedBy = "menu")
-    private List<MenuDetail> menuDetailList = new ArrayList<>();
+    public void updatePicture(String[] urlArr) {
+        this.menuPictureUrl = urlArr[0];
+        this.menuPicturePath = urlArr[1];
+    }
 }
